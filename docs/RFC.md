@@ -16,46 +16,172 @@ tags:
 
 # Core Play RFC — STIM Game & Software Preservation
 
-> `core play` — run preserved software in deterministic STIM bundles.
+> `core play` runs preserved software from deterministic STIM bundles.
 > Games are the demo. Legacy enterprise is the product.
 
-**Module:** `dappco.re/go/play`
-**Repository:** `core/play`
-**Dependencies:** `core/go` (primitives), `core/cli` (command registration), `core/go/build` (deterministic archives)
+**Module:** `dappco.re/go/play`  
+**Repository:** `core/play`  
+**Status:** Draft, spec-first  
+**Primary dependency:** `core/app` supplies the manifest and boot contract
 
 ---
 
-## 1. Overview
+## 1. Purpose
 
-Core Play runs preserved software inside STIM (Sandboxed Temporal Isolation Module) containers. A STIM bundle is a deterministic, hash-verified, SBOM-tracked archive containing:
+Core Play is the runtime for preserved software packaged as **STIM bundles**.
+A STIM bundle combines:
 
-1. The original artefact (ROM, binary, installer)
-2. A runtime engine (emulator core, compatibility layer, or native runner)
-3. A manifest describing inputs, outputs, and verification chain
+1. the original artefact
+2. the runtime needed to execute it
+3. the metadata needed to verify, launch, and preserve it
 
-```bash
-core play                          # read manifest.yaml from cwd
-core play mega-lo-mania            # from games/ parent dir
-core play command-and-conquer      # same
-```
+The immediate product shape is a games runtime. The broader product shape is a
+general preservation and controlled execution system for legacy software.
 
-Directory name IS the game name. Same pattern as `core build` reads `build.yaml`.
+### 1.1 Position in Core
+
+Core Play is not a general-purpose application framework. It sits on top of the
+Core stack and consumes existing runtime primitives.
+
+- `core/app` defines manifest discovery and boot flow
+- `core/gui` owns windows, rendering surfaces, and platform shell concerns
+- `core/go/build` produces deterministic bundle artefacts
+- `core/cli` exposes command registration and command routing
+- Shield-style verification surfaces provide integrity, SBOM, and threat checks
+
+### 1.2 Goals
+
+- Run preserved software from a deterministic, verifiable bundle
+- Separate the **artefact** from the **runtime engine** cleanly
+- Keep execution sandboxed and auditable
+- Make bundle verification possible without launch
+- Support both curated catalogue distribution and local BYOROM workflows
+- Reuse the same bundle contract for games and enterprise preservation
+
+### 1.3 Non-goals
+
+- Writing emulator engines from scratch
+- Replacing `core/app` or `core/gui`
+- Doing per-title game porting work inside this module
+- Defining commercial rights for individual games inside the runtime itself
+- Solving cloud streaming as a requirement for local playback
 
 ---
 
-## 2. STIM Bundle Structure
+## 2. Terms
 
-```
+### 2.1 STIM
+
+**STIM** means **Sandboxed Temporal Isolation Module**.
+
+A STIM bundle is a self-describing directory or archive that preserves:
+
+- the original software artefact
+- the engine or runner required to execute it
+- the verification chain needed to prove integrity
+
+### 2.2 Artefact
+
+The original software payload:
+
+- ROM
+- binary
+- installer
+- data files
+- application package
+
+### 2.3 Engine
+
+The runtime used to execute the artefact:
+
+- emulator core
+- compatibility layer
+- native runner
+
+Examples include DOSBox, ScummVM, RetroArch-based adapters, or a native wrapper.
+
+### 2.4 Bundle
+
+The on-disk shape used by `core play`. A bundle can be:
+
+- a directory in development
+- a deterministic archive for distribution
+
+### 2.5 Catalogue
+
+A known index of playable or installable bundles, typically rights-cleared,
+curated, and pre-verified.
+
+### 2.6 BYOROM
+
+**Bring Your Own ROM** or, more generally, **Bring Your Own Artefact**.
+The user supplies the original software. Core Play supplies verification,
+packaging, and runtime selection where possible.
+
+---
+
+## 3. Product framing
+
+Core Play has three jobs at once:
+
+1. preserve software
+2. run software safely
+3. prove the Core distribution pipeline on a simpler product than CoreLEM
+
+The games-facing product is important because it is visible, demoable, and
+emotionally legible. The same machinery also fits long-tail enterprise cases:
+
+- preserved COBOL workloads
+- old Win32 operational tools
+- legacy monitoring agents
+- internal software that must survive platform churn
+
+This RFC therefore treats **games as the initial catalogue**, not as the only
+valid content type.
+
+---
+
+## 4. Bundle contract
+
+Every STIM bundle has a deterministic and inspectable structure.
+
+```text
 mega-lo-mania/
-├── manifest.yaml          # bundle metadata + verification
+├── manifest.yaml
 ├── rom/
-│   └── MegaLoMania.zip    # original artefact (542 kB)
-├── emulator.yaml          # runtime configuration
-├── sbom.json              # CycloneDX SBOM
-└── checksums.sha256       # deterministic hash chain
+│   └── MegaLoMania.zip
+├── emulator.yaml
+├── sbom.json
+└── checksums.sha256
 ```
 
-### 2.1 manifest.yaml
+The directory name is the bundle code and defaults to the runnable name.
+
+### 4.1 Required files
+
+| File | Required | Purpose |
+|------|----------|---------|
+| `manifest.yaml` | Yes | Identity, artefact metadata, runtime binding, permissions |
+| `rom/` | Yes | Original artefact payload |
+| `emulator.yaml` | Yes | Engine-specific launch configuration |
+| `sbom.json` | Yes | CycloneDX or equivalent bundle inventory |
+| `checksums.sha256` | Yes | Hash chain for deterministic verification |
+
+### 4.2 Optional files
+
+| File | Purpose |
+|------|---------|
+| `cover.png` | Catalogue artwork |
+| `licence.txt` | Rights or redistribution text |
+| `notes.md` | Preservation notes and provenance |
+| `patches/` | Optional compatibility patches declared in the manifest |
+| `saves/seed/` | Optional starter save state or test fixtures |
+
+### 4.3 `manifest.yaml`
+
+The manifest is the bundle contract. It describes what the bundle is, what it
+contains, what engine it expects, what permissions it needs, and how integrity
+is proven.
 
 ```yaml
 name: mega-lo-mania
@@ -64,53 +190,159 @@ author: "Sensible Software"
 year: 1991
 platform: sega-genesis
 genre: strategy
+licence: freeware
 
 artefact:
   path: rom/MegaLoMania.zip
-  sha256: "..."
-  size: 542kB
-  source: "freeware — distributed by retrogames.cz, GOG, Steam"
+  sha256: "9f0f..."
+  size: 554192
+  media_type: application/zip
+  source: "Rights-cleared redistribution"
 
 runtime:
-  engine: kega-fusion        # or: dosbox, scummvm, retroarch
+  engine: retroarch
+  profile: genesis
   config: emulator.yaml
+  entrypoint: rom/MegaLoMania.zip
+  acceleration: auto
+  filter: nearest
 
-licence: freeware
-preservation:
-  verified: true
+verification:
   chain: checksums.sha256
+  sbom: sbom.json
+  deterministic: true
+
+permissions:
+  network: false
+  microphone: false
+  filesystem:
+    read:
+      - rom/
+    write:
+      - saves/
+      - screenshots/
+
+save:
+  path: saves/
+  screenshots: screenshots/
+
+distribution:
+  mode: catalogue
+  byorom: false
 ```
 
-### 2.2 emulator.yaml
+### 4.4 Manifest fields
+
+| Field | Required | Meaning |
+|------|----------|---------|
+| `name` | Yes | Stable machine identifier |
+| `title` | Yes | Human-readable title |
+| `author` | No | Original developer or studio |
+| `year` | No | Original release year |
+| `platform` | Yes | Target platform of the artefact |
+| `genre` | No | Catalogue metadata |
+| `licence` | Yes | Rights model for bundle distribution |
+| `artefact` | Yes | Original payload metadata |
+| `runtime` | Yes | Engine binding and launch entry |
+| `runtime.acceleration` | No | Preferred acceleration policy: `off`, `auto`, or `required` |
+| `runtime.filter` | No | Preferred display filter such as `none`, `nearest`, `bilinear`, `scanline`, or `crt` |
+| `verification` | Yes | Integrity chain declaration |
+| `permissions` | Yes | Sandbox and runtime capability declaration |
+| `save` | No | Save-state and screenshot layout |
+| `distribution` | No | Delivery-mode hints |
+
+### 4.5 `emulator.yaml`
+
+`emulator.yaml` carries engine-specific launch details which do not belong in
+the top-level manifest.
 
 ```yaml
-engine: kega-fusion
-platform: sega-genesis
+engine: retroarch
+profile: genesis
+
 input:
   type: gamepad
   mapping: default-genesis
+
 display:
   scale: 3x
-  filter: nearest            # or: crt, scanline
+  acceleration: auto
+  filter: nearest
+  aspect: original
+
 audio:
   enabled: true
   sample_rate: 44100
+
+performance:
+  rewind: false
+  fast_forward: true
 ```
+
+### 4.6 Hash chain
+
+`checksums.sha256` records hashes for every material file in the bundle.
+
+At minimum:
+
+- `manifest.yaml`
+- `emulator.yaml`
+- every file in `rom/`
+- `sbom.json`
+- any declared patch or auxiliary content
+
+The hash list must be stable under deterministic rebuilds.
+
+### 4.7 SBOM
+
+`sbom.json` represents the bundle inventory, not only the engine binary.
+It should include:
+
+- artefact payload
+- engine package or engine identifier
+- launch configuration
+- applied patches
+- build provenance where available
+
+CycloneDX is the preferred initial format.
 
 ---
 
-## 3. CoreCommand Integration
+## 5. Resolution and command surfaces
 
-As a CoreCommand, `play` maps to all surfaces:
+Core Play is a CoreCommand and should map cleanly to CLI, HTTP, MCP, and
+localisation surfaces.
 
-| Surface | Path | Usage |
-|---------|------|-------|
-| CLI | `core play {name}` | Run from terminal |
-| HTTP | `GET /play/{name}` | Launch via API |
-| MCP | `play` tool | AI agent can test bundles |
-| i18n | `play.*` | Localised strings |
+| Surface | Path | Purpose |
+|---------|------|---------|
+| CLI | `core play {name}` | Run a bundle |
+| CLI | `core play/list` | List available bundles |
+| CLI | `core play/verify {name}` | Verify without launching |
+| CLI | `core play/bundle` | Create a bundle |
+| HTTP | `GET /play/{name}` | Launch or request launch |
+| MCP | `play` | Agent-facing bundle interaction |
+| i18n | `play.*` | User-facing strings |
 
-### 3.1 Command Registration
+### 5.1 Resolution rules
+
+`core play` resolves bundles in the following order:
+
+1. current working directory if `manifest.yaml` exists
+2. named child directory in a configured catalogue root
+3. installed local bundle index
+4. explicit path argument if provided
+
+Examples:
+
+```bash
+core play
+core play mega-lo-mania
+core play ./bundles/mega-lo-mania
+core play/list
+core play/verify mega-lo-mania
+```
+
+### 5.2 Command registration shape
 
 ```go
 func Register(c *core.Core) {
@@ -123,55 +355,57 @@ func Register(c *core.Core) {
         Action:      cmdPlayList,
     })
     c.Command("play/verify", core.Command{
-        Description: "Verify hash chain without running",
+        Description: "Verify a bundle without running it",
         Action:      cmdPlayVerify,
     })
     c.Command("play/bundle", core.Command{
-        Description: "Create a STIM bundle from artefact",
+        Description: "Create a deterministic STIM bundle",
         Action:      cmdPlayBundle,
     })
 }
 ```
 
-### 3.2 CLI Usage
+### 5.3 Exit expectations
 
-```bash
-core play                              # cwd has manifest.yaml
-core play mega-lo-mania                # resolve from games dir
-core play --list                       # list available bundles
-core play --verify mega-lo-mania       # verify hash chain without running
-core play --info mega-lo-mania         # show manifest + SBOM
-```
+| Command | Success | Failure |
+|---------|---------|---------|
+| `play` | Launches or hands off to launcher | Verification, resolution, or engine error |
+| `play/list` | Returns catalogue entries | Index error |
+| `play/verify` | Reports verified status | Hash, manifest, or SBOM mismatch |
+| `play/bundle` | Produces deterministic bundle | Invalid inputs or non-deterministic output |
 
 ---
 
-## 4. STIM Runtime
+## 6. Runtime architecture
 
-### 4.1 Isolation
+### 6.1 Boot sequence
 
-STIM bundles run in sandboxed containers:
+The runtime should follow a strict boot order:
 
-- No network access (unless manifest explicitly permits)
-- No filesystem writes outside save-state directory
-- Process isolation via Core's process primitives (`c.Process()`)
-- Resource limits (CPU, memory) from manifest
+1. discover bundle
+2. load `manifest.yaml`
+3. verify hash chain and bundle structure
+4. resolve engine adapter
+5. prepare sandbox
+6. mount save-state directories
+7. launch engine with declared config
+8. capture outcome, logs, and optional screenshots
 
-### 4.2 Engine Registry
+### 6.2 Engine registry
+
+Engine support is provided through adapters, not hard-coded branches.
 
 ```go
 type Engine interface {
-    // Name returns the engine identifier (e.g. "dosbox", "retroarch")
     Name() string
-    // Platforms returns supported platforms (e.g. ["sega-genesis", "dos"])
     Platforms() []string
-    // Run executes the artefact with the given config
-    Run(artefact string, config EngineConfig) error
-    // Verify checks the engine binary integrity
     Verify() error
+    Launch(bundle Bundle, cfg Config) error
 }
 ```
 
-Engines register via `init()` with build tags — same pattern as CLI variants:
+Registration should use build tags where that keeps platform-specific or
+licence-sensitive adapters separate.
 
 ```go
 //go:build engine_dosbox
@@ -181,209 +415,308 @@ func init() {
 }
 ```
 
-### 4.3 Save States
+### 6.3 Engine selection
 
-```
+Engine selection should be explicit first, heuristic second.
+
+Order:
+
+1. manifest `runtime.engine`
+2. manifest `runtime.profile`
+3. platform match
+4. configured default adapter
+
+If no valid adapter exists, verification may still succeed, but launch fails
+with a precise engine-resolution error.
+
+### 6.4 Sandbox policy
+
+Default runtime policy:
+
+- no outbound network
+- no writes outside the declared save-state root
+- no arbitrary process spawning from the bundle
+- resource ceilings set from manifest defaults or platform policy
+- engine binaries must pass integrity checks before launch
+
+Manifest permissions can narrow access further. They should not silently widen
+host access beyond platform policy.
+
+### 6.5 Save-state layout
+
+```text
 ~/.core/play/
 ├── mega-lo-mania/
-│   ├── saves/             # save states
-│   └── screenshots/       # auto-captured
+│   ├── saves/
+│   ├── screenshots/
+│   └── session.log
 └── command-and-conquer/
-    └── saves/
+    ├── saves/
+    └── screenshots/
 ```
 
-`.core/` directory convention — same as config, store, agent workspace.
+The runtime owns these directories. Bundle content should be treated as
+read-only after verification.
+
+### 6.6 Observability
+
+The runtime should capture:
+
+- engine selected
+- verification result
+- launch duration
+- exit code or failure class
+- save-state path
+- optional screenshot artefacts for catalogue QA
 
 ---
 
-## 5. Shield Integration
+## 7. Verification and Shield
 
-Every STIM bundle is a Shield artefact:
+Every STIM bundle is also a verification subject.
 
-| Shield Surface | What It Checks |
-|---------------|----------------|
-| SBOM | Full dependency chain (ROM + engine + config) |
-| Code | Engine binary integrity |
-| Content | ROM hash matches original release |
-| Threat | No injected payloads in artefact |
+| Surface | Purpose |
+|---------|---------|
+| SBOM | Describe bundle inventory and provenance |
+| Code | Verify engine package or adapter integrity |
+| Content | Verify original artefact hash |
+| Threat | Detect unexpected payloads or tampering |
 
-The marketing: "This binary hasn't changed since 1991. Here's the SBOM. Here's the hash chain. Shield verified: 0 modifications."
+### 7.1 Verification guarantees
+
+`core play/verify` should confirm:
+
+- required files exist
+- manifest parses and is internally coherent
+- every declared file hash matches
+- the SBOM file exists and matches declared location
+- the engine named by the manifest is known or marked unresolved
+
+### 7.2 Deterministic bundle expectations
+
+The same inputs should produce the same bundle outputs, including:
+
+- file names
+- file ordering
+- timestamps normalised where supported
+- checksum file contents
+- archive layout
+
+This matters for preservation and for supply-chain trust.
+
+### 7.3 Failure classes
+
+Verification failures should be categorised clearly:
+
+- `bundle/not-found`
+- `bundle/invalid-structure`
+- `manifest/invalid`
+- `hash/mismatch`
+- `sbom/missing`
+- `engine/unavailable`
+- `sandbox/policy-denied`
+
+These codes should be shared across CLI, HTTP, and MCP where practical.
 
 ---
 
-## 6. Bundle Creation
+## 8. Bundle creation
+
+`core play/bundle` turns a raw artefact into a runnable STIM bundle.
+
+### 8.1 Inputs
+
+Typical inputs:
+
+- bundle name
+- title and metadata
+- source artefact
+- platform
+- engine
+- runtime profile
+- rights and redistribution mode
+
+Example:
 
 ```bash
-core play bundle --name mega-lo-mania \
-    --rom MegaLoMania.zip \
-    --engine kega-fusion \
-    --platform sega-genesis \
-    --year 1991 \
-    --author "Sensible Software"
+core play/bundle \
+  --name mega-lo-mania \
+  --title "Mega lo Mania" \
+  --rom MegaLoMania.zip \
+  --platform sega-genesis \
+  --engine retroarch \
+  --profile genesis \
+  --licence freeware
 ```
 
-Produces a deterministic STIM bundle with:
-- SHA-256 checksums for every file
-- CycloneDX SBOM
-- manifest.yaml
-- Deterministic zip (from go-build)
+### 8.2 Output
+
+The command should produce:
+
+- `manifest.yaml`
+- `emulator.yaml`
+- `checksums.sha256`
+- `sbom.json`
+- deterministic archive output if requested
+
+### 8.3 Workflow
+
+1. inspect input artefact
+2. assign runtime adapter
+3. emit manifest and runtime config
+4. generate checksum chain
+5. generate SBOM
+6. verify the just-built bundle
+7. optionally archive deterministically
+
+### 8.4 BYOROM mode
+
+For BYOROM or enterprise ingestion, bundle creation may omit any curated
+catalogue metadata not required for execution.
+
+That still does not relax:
+
+- checksum generation
+- manifest integrity
+- sandbox declaration
+- engine resolution
 
 ---
 
-## 7. Catalogue
+## 9. Distribution profiles
 
-### 7.1 Launch Titles (Freeware / Open Source)
+Core Play should support multiple distribution shapes without requiring the
+runtime contract to fork.
 
-| Game | Year | Platform | Engine | Size | Licence |
-|------|------|----------|--------|------|---------|
-| Mega lo Mania | 1991 | Sega Genesis | kega-fusion | 542 kB | Freeware |
-| Command & Conquer | 1995 | DOS | dosbox | ~50 MB | EA Freeware |
-| Prince of Persia | 1989 | DOS | dosbox | ~1 MB | Open Source |
-| Cave Story | 2004 | Native | native | ~3 MB | Freeware |
-| Tyrian | 1995 | DOS | dosbox | ~8 MB | Freeware |
-| Beneath a Steel Sky | 1994 | ScummVM | scummvm | ~70 MB | Freeware |
+### 9.1 Local free tier
 
-### 7.2 Enterprise Use Case
+- self-compiled player
+- user-supplied artefacts
+- no remote entitlement requirement
+- full local verification path
 
-Same STIM bundle format, same verification, same isolation:
+This is the baseline preservation mode.
 
-| Software | Use Case |
-|----------|----------|
-| Legacy COBOL system | Bank migration bridge |
-| Old Win32 internal tool | Preserved with TransformerIn/Out CLI compat |
-| Deprecated monitoring agent | Sandboxed execution until replacement ships |
+### 9.2 Curated catalogue
 
----
+- rights-cleared bundles
+- prebuilt verification metadata
+- artwork and catalogue metadata
+- consistent engine packaging
 
-## 8. Implementation Priority
+This is the likely default consumer experience.
 
-1. `manifest.yaml` schema and parser
-2. `core play` command registration
-3. Engine interface and registry
-4. DOSBox engine adapter
-5. RetroArch engine adapter (covers Genesis, SNES, etc.)
-6. STIM sandbox (process isolation, no-network, save states)
-7. `core play bundle` creation command
-8. Shield integration (SBOM, hash verification)
-9. ScummVM engine adapter
-10. Catalogue index and `--list` command
+### 9.3 Proposed Apple distribution profile
 
----
+Core Play is also positioned as a pipeline proof before CoreLEM:
 
----
+- simpler review surface than a full AI or compute-heavy product
+- validates CoreGUI rendering, input, and packaging path
+- exercises build, test, archive, and signing flow
 
-## 9. App Store Distribution
+This section is a **product proposal**, not a platform guarantee. Any platform
+distribution plan must be revalidated against current policy and current rights.
 
-### 9.1 The Apple Play
+Proposed commercial tiers:
 
-CorePlay is the **pipeline proof** before CoreLEM. Simpler review (no AI, no Metal compute), proves CoreGUI rendering, input, audio, and the full Xcode Cloud → TestFlight → App Store pipeline.
+| Tier | Shape | Notes |
+|------|-------|-------|
+| 1 | Platform-subsidy tier | Free to eligible subscribers if commercial terms exist |
+| 2 | Direct paid tier | Monthly, yearly, or lifetime entitlement |
+| 3 | Free source tier | Self-compiled, BYOROM, no catalogue entitlement |
 
-### 9.2 Business Model — Three Tiers
+### 9.4 Protected asset mode
 
-**Tier 1: Apple Arcade+ / Apple One Subscribers (FREE)**
-- CorePlay detects active Arcade+ or Apple One via StoreKit 2 (`Transaction.currentEntitlements`)
-- Full access to entire game library, gratis
-- Family Sharing (up to 5 people) for the duration of their Apple subscription
-- If they cancel Apple One/Arcade+, they can purchase CorePlay directly (Tier 2)
-- Apple gets: happier subscribers who see MORE value in Arcade+
-- We get: distribution to Apple's entire subscriber base, zero acquisition cost
+Some catalogue bundles may use a protected artefact format, such as a `.stim`
+payload delivered separately from the open player.
 
-**Tier 2: Non-Arcade Subscribers (PAID)**
-- £2.99/mo or £24.99/year or £49.99 lifetime
-- Apple gets 30% (year 1) → 15% (year 2+, Small Business Program)
-- Same full library access
-- If they later get Arcade+, auto-switches to free tier
+If used, the design constraints are:
 
-**Tier 3: Free (source compile, EUPL-1.2)**
-- Same player binary, self-compiled
-- ROMs not included (user provides their own)
-- No DRM, no streaming, no sync
-- Works perfectly, just manual
+- decryption should occur in memory
+- protected content should not be required for free-tier BYOROM support
+- entitlement checks must be separable from bundle execution logic
+- the open runtime must remain functional without protected catalogue assets
 
-### 9.3 STIM DRM via Borg
-
-Same system as dapp.fm music streaming:
-- ROM encrypted as `.stim` (Sandboxed Temporal Isolation Module)
-- CDN-hosted (Garage S3 or Apple CloudKit)
-- Decrypted in-memory in WebView2 (never touches disk)
-- Stream key derived from active subscription entitlement
-- Zero-trust: no backend server validates — the key IS the entitlement
-- Browser-based: works in WebView2, works in Safari, works anywhere CoreTS runs
-
-```
-User opens game
-  → StoreKit 2 checks entitlement (Arcade+ OR CorePlay sub)
-  → Derives stream key from entitlement token
-  → Fetches .stim from CDN
-  → Decrypts in WebView2 memory
-  → Emulator loads ROM from ArrayBuffer
-  → Game plays
-```
-
-### 9.4 The Pitch to Apple
-
-> "We're giving ALL your Apple One and Arcade+ subscribers access to our
-> entire retro game library for free. Family Sharing included. We're a
-> UK Community Interest Company — we chose to. You get 30-50% of
-> non-Arcade revenue. Your customers get more value from their existing
-> subscription. 100% in your ecosystem — Xcode Cloud built, signed,
-> notarised. Everyone wins."
-
-### 9.5 Why Apple Cares
-
-1. More value for Arcade+ subscribers → less churn → more revenue
-2. Retro gaming is nostalgia-driven → high engagement, low support cost
-3. 100% in Apple's ecosystem — no external servers, no sideloading
-4. Signed, notarised, Xcode Cloud built — clean provenance
-5. CIC structure = not extractive, cooperative by charter
-6. Same tech (CoreGUI + MLX) leads to CoreLEM → Apple Intelligence ecosystem
-7. Display tech (STIM isolation) could interest Apple engineers
-
-### 9.6 Xcode Cloud Pipeline
-
-```
-Local: iterate with 4-agent IDE (Claude + Codex + Lemrd + core-agent)
-Push to main
-  → Xcode Cloud: Build macOS + iOS → Test (parallel) → Archive → Notarise
-  → TestFlight: Snider plays Mega-Lo-Mania on iPhone (first test)
-  → App Store: Submit when stable
-```
-
-25 free compute hours/month covers the build. Revenue covers upgrades.
-
-### 9.7 Platform Targets
-
-| Platform | Engine | Priority |
-|----------|--------|----------|
-| macOS (arm64) | Native WebView2 | MVP |
-| iOS / iPadOS | WKWebView + touch input | Post-MVP |
-| watchOS | Game launcher / remote | Future |
-| tvOS | AirPlay + controller input | Future |
-
-### 9.8 Legal
-
-- Emulators are legal (Apple allows them as of 2024 policy change)
-- ROMs: only distribute games we have rights to (freeware, open source)
-- Partner with rights holders where needed
-- User-provided ROMs: supported in free tier (BYOROM)
-- EUPL-1.2 for the player, separate content licence for game library
+This keeps preservation mode intact while allowing a commercial catalogue layer.
 
 ---
 
-## 10. Cross-References
+## 10. Initial catalogue and enterprise extension
 
-- project/lthn/desktop/RFC.md — CoreGUI shell
-- project/lthn/desktop/RFC.xcode-pipeline.md — Xcode Cloud pipeline
-- code/core/gui/RFC.md — WebView2 + CoreTS preload
-- code/core/ts/RFC.md — Global scope control, storage polyfills
-- code/core/go/io/RFC.md — Borg .stim, io.Medium
-- code/core/go/store/RFC.md — Save states, SQLite KV
-- code/core/lem/RFC.md — Same business model template, same pipeline
-- rfc/snider/RFC-BORG-*.md — Borg DRM, .stim format
+### 10.1 Launch catalogue candidates
+
+| Title | Year | Platform | Engine | Rights model |
+|------|------|----------|--------|--------------|
+| Mega lo Mania | 1991 | Sega Genesis | RetroArch profile | Freeware or licensed |
+| Command & Conquer | 1995 | DOS | DOSBox | Rights-cleared freeware |
+| Prince of Persia | 1989 | DOS | DOSBox | Open-source or authorised distribution |
+| Cave Story | 2004 | Native | Native runner | Freeware |
+| Tyrian | 1995 | DOS | DOSBox | Freeware |
+| Beneath a Steel Sky | 1994 | ScummVM | ScummVM | Freeware |
+
+These titles are examples for planning. Final inclusion depends on current
+rights and packaging work.
+
+### 10.2 Enterprise extension
+
+The same bundle contract can preserve:
+
+| Software type | Example use |
+|---------------|-------------|
+| Legacy COBOL workload | Bank migration bridge |
+| Old Win32 internal tool | Operational continuity during replacement |
+| Deprecated monitoring agent | Sandboxed stopgap while migration completes |
+
+Enterprise value comes from preservation, verification, and controlled
+execution, not from the games catalogue itself.
+
+---
+
+## 11. Delivery phases
+
+| Phase | Outcome |
+|-------|---------|
+| 1 | Manifest parser and bundle validator |
+| 2 | `play`, `play/list`, and `play/verify` command registration |
+| 3 | Engine registry and adapter contract |
+| 4 | First engine adapter, likely DOSBox |
+| 5 | Save-state layout and sandbox policy |
+| 6 | `play/bundle` creation flow |
+| 7 | Shield-aligned verification and SBOM generation |
+| 8 | Catalogue index and launch candidates |
+| 9 | Optional protected asset and entitlement profile |
+
+The first milestone worth shipping is:
+
+- directory bundle validation
+- one runnable engine
+- one known-good title
+- local BYOROM support
+
+---
+
+## 12. Open questions
+
+- Should `emulator.yaml` remain engine-specific, or be renamed to a more
+  neutral `runtime.yaml` later?
+- Does the runtime ever need per-bundle signed manifests beyond checksum
+  verification?
+- Which engine adapters ship by default versus behind build tags?
+- Is protected catalogue delivery a separate module, or an optional extension of
+  `core/play`?
+- How much of the save-state format should be normalised across engines?
+- Should enterprise bundles reuse the same `rom/` directory name, or move to a
+  more general `artefact/` path?
+
+These questions do not block the initial implementation, but they should remain
+visible while the first runnable slice lands.
 
 ---
 
 ## Changelog
 
-- 2026-04-08: Added §9 App Store distribution — Arcade+ free tier, Borg .stim DRM, StoreKit 2, Xcode Cloud pipeline, platform targets, legal. CorePlay proves pipeline before CoreLEM ships.
-- 2026-04-01: Initial RFC — STIM bundles, engine registry, CoreCommand integration, Shield verification, launch catalogue. "Games are the demo. Legacy enterprise is the product."
+- 2026-04-08: Reworked into a cleaner draft with goals, bundle contract,
+  runtime architecture, verification model, distribution profiles, delivery
+  phases, and open questions.
+- 2026-04-01: Initial notes covering STIM bundles, engine registry, verification
+  chain, and catalogue direction.

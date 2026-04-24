@@ -545,6 +545,39 @@ These are explicitly lower priority:
 - offline frame enhancement for screenshots
 - compute-assisted texture unpacking for software renderers
 
+Additional nice-to-have features that still fit the `go-mlx` boundary:
+
+- rotation and orientation kernels for portrait arcade and handheld titles
+- dirty-region or partial-frame upload paths for UI-heavy preserved software
+- colour-management helpers for gamma, contrast, and display-target tuning
+- descriptor and buffer-pool reuse to reduce per-frame allocation churn
+- pipeline warm-up or kernel preloading to avoid first-frame stutter
+- deterministic thumbnail and screenshot derivation for save-state previews
+- bundle-declared filter profiles with runtime-safe user overrides
+- capability tiers so filter policy can target M1, M2, or newer devices cleanly
+
+### 14.1 Separate Apple runtime work
+
+Some Apple-specific work is desirable, but it does **not** belong in `go-mlx`.
+
+The companion RFC for that work should be:
+
+- `docs/RFC.apple-platform-runtime.md`
+
+That RFC should cover the Apple runtime concerns which sit beside MLX compute:
+
+- display-link timing and frame pacing
+- low-copy presentation hand-off into `core/gui`
+- controller, keyboard, and hot-plug handling
+- low-latency audio output and synchronisation
+- thermal, power, and foreground/background runtime policy
+
+This keeps the split clean:
+
+- `go-mlx` accelerates compute around frames
+- `core/play` owns policy and engine integration
+- `core/gui` or an Apple runtime layer owns presentation, input, and audio
+
 ---
 
 ## 15. Security and runtime policy
@@ -652,3 +685,5 @@ second compute stack.
 
 - 2026-04-15: Initial RFC for using `go-mlx` as the Metal compute layer for
   `core/play` gaming and emulation acceleration.
+- 2026-04-15: Expanded the nice-to-have roadmap and named a companion Apple
+  runtime RFC for non-MLX platform work.

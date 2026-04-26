@@ -183,7 +183,7 @@ func TestService_PreparePlayScummVM_Good(testingT *testing.T) {
 	if plan.Launch.Executable != "scummvm" {
 		testingT.Fatalf("unexpected launch executable: %q", plan.Launch.Executable)
 	}
-	if len(plan.Launch.Arguments) != 2 {
+	if len(plan.Launch.Arguments) != 3 {
 		testingT.Fatalf("unexpected launch arguments: %v", plan.Launch.Arguments)
 	}
 }
@@ -320,7 +320,6 @@ distribution:
 func scummVMBundleFS() fstest.MapFS {
 	artefactData := []byte("sky-disk")
 	emulatorData := []byte("engine: scummvm\nprofile: sky\n")
-	sbomData := []byte("{\"bomFormat\":\"CycloneDX\"}")
 	manifestData := []byte(`name: beneath-a-steel-sky
 title: "Beneath a Steel Sky"
 platform: scummvm
@@ -352,6 +351,14 @@ save:
 distribution:
   mode: catalogue
 `)
+	manifest, err := LoadManifest(manifestData)
+	if err != nil {
+		panic(err)
+	}
+	sbomData, err := BuildSBOM(manifest)
+	if err != nil {
+		panic(err)
+	}
 	checksumData := []byte(
 		hashHex(manifestData) + "  manifest.yaml\n" +
 			hashHex(emulatorData) + "  emulator.yaml\n" +

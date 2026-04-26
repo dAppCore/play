@@ -1,10 +1,6 @@
 package play
 
-import (
-	"io/fs"
-	"path"
-	"sort"
-)
+import "io/fs"
 
 // Service provides CLI-facing bundle operations without binding to a concrete shell.
 type Service struct {
@@ -12,19 +8,11 @@ type Service struct {
 	Registry *Registry
 }
 
-// BundleSummary describes a bundle for list and verify surfaces.
-type BundleSummary struct {
-	Path     string
-	Name     string
-	Title    string
-	Platform string
-	Engine   string
-}
-
 // VerifyResult describes bundle verification output.
 type VerifyResult struct {
 	Summary  BundleSummary
 	Issues   ValidationErrors
+	Shield   ShieldReport
 	Verified bool
 }
 
@@ -40,9 +28,10 @@ type PlayPlan struct {
 
 // BundlePlan describes a planned bundle before any files are written.
 type BundlePlan struct {
-	Path         string
-	Manifest     Manifest
-	ArtefactData []byte
+	Path             string
+	Manifest         Manifest
+	ArtefactData     []byte
+	EngineBinaryData []byte
 }
 
 // NewService creates a service from a bundle filesystem and engine registry.
@@ -59,54 +48,10 @@ func NewService(bundles fs.FS, registry *Registry) Service {
 
 // ListBundles discovers bundles beneath a root directory.
 func (service Service) ListBundles(request ListRequest) ([]BundleSummary, error) {
-	rootPath, err := cleanBundlePath(request.Root)
-	if err != nil {
-		return nil, err
-	}
-	if service.Bundles == nil {
-		return nil, PathError{
-			Kind:    "bundle/filesystem-missing",
-			Path:    rootPath,
-			Message: "bundle filesystem is required",
-		}
-	}
-
-	summaries := make([]BundleSummary, 0)
-	if hasManifest(service.Bundles, rootPath) {
-		bundle, loadErr := LoadBundle(service.Bundles, rootPath)
-		if loadErr != nil {
-			return nil, loadErr
-		}
-		summaries = append(summaries, summariseBundle(bundle))
-	}
-
-	entries, err := fs.ReadDir(service.Bundles, rootPath)
-	if err != nil {
-		return nil, err
-	}
-
-	for _, entry := range entries {
-		if !entry.IsDir() {
-			continue
-		}
-
-		candidatePath := joinBundlePath(rootPath, entry.Name())
-		if !hasManifest(service.Bundles, candidatePath) {
-			continue
-		}
-
-		bundle, loadErr := LoadBundle(service.Bundles, candidatePath)
-		if loadErr != nil {
-			return nil, loadErr
-		}
-		summaries = append(summaries, summariseBundle(bundle))
-	}
-
-	sort.Slice(summaries, func(first int, second int) bool {
-		return summaries[first].Path < summaries[second].Path
-	})
-
-	return summaries, nil
+	return (Catalogue{
+		Bundles:  service.Bundles,
+		Registry: service.registry(),
+	}).Walk(request.Root)
 }
 
 // VerifyBundle loads and verifies a bundle.
@@ -124,12 +69,14 @@ func (service Service) VerifyBundle(request VerifyRequest) (VerifyResult, error)
 		return VerifyResult{}, err
 	}
 
-	issues := bundle.VerifyWithRegistry(service.registry())
+	shield := Shield{Registry: service.registry()}.Verify(bundle)
+	issues := shield.Issues()
 
 	return VerifyResult{
 		Summary:  summariseBundle(bundle),
 		Issues:   issues,
-		Verified: !issues.HasIssues(),
+		Shield:   shield,
+		Verified: shield.OverallOK,
 	}, nil
 }
 
@@ -149,7 +96,8 @@ func (service Service) PreparePlay(request PlayRequest) (PlayPlan, error) {
 	}
 
 	registry := service.registry()
-	issues := bundle.VerifyWithRegistry(registry)
+	shield := Shield{Registry: registry}.Verify(bundle)
+	issues := shield.Issues()
 	engine, found := registry.Resolve(bundle.Manifest.Runtime.Engine)
 	var launch *LaunchPlan
 	if found && !issues.HasIssues() {
@@ -206,6 +154,7 @@ func (service Service) PlanBundle(request BundleRequest) (BundlePlan, Validation
 			Chain:         verificationChainPath,
 			SBOM:          sbomPath,
 			Deterministic: true,
+			Engine:        plannedCodePin(request, runtimeDefaults.Engine),
 		},
 		Preservation: Preservation{
 			Verified: true,
@@ -238,9 +187,10 @@ func (service Service) PlanBundle(request BundleRequest) (BundlePlan, Validation
 	}
 
 	return BundlePlan{
-		Path:         request.Name,
-		Manifest:     manifest,
-		ArtefactData: cloneBytes(request.ArtefactData),
+		Path:             request.Name,
+		Manifest:         manifest,
+		ArtefactData:     cloneBytes(request.ArtefactData),
+		EngineBinaryData: cloneBytes(request.EngineBinaryData),
 	}, nil
 }
 
@@ -300,6 +250,7 @@ func summariseBundle(bundle Bundle) BundleSummary {
 		Title:    bundle.Manifest.Title,
 		Platform: bundle.Manifest.Platform,
 		Engine:   bundle.Manifest.Runtime.Engine,
+		Year:     bundle.Manifest.Year,
 	}
 }
 
@@ -309,14 +260,6 @@ func defaultString(value string, fallback string) string {
 	}
 
 	return value
-}
-
-func joinBundlePath(rootPath string, child string) string {
-	if rootPath == "." {
-		return child
-	}
-
-	return path.Join(rootPath, child)
 }
 
 func (service Service) registry() *Registry {

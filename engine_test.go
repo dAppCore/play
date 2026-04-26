@@ -67,6 +67,7 @@ type stubEngine struct {
 	name      string
 	platforms []string
 	verifyErr error
+	codeHash  string
 }
 
 func (stub stubEngine) Name() string {
@@ -83,4 +84,17 @@ func (stub stubEngine) Run(string, EngineConfig) error {
 
 func (stub stubEngine) Verify() error {
 	return stub.verifyErr
+}
+
+func (stub stubEngine) CodeIdentity() EngineCodeIdentity {
+	engineHash := stub.codeHash
+	if engineHash == "" {
+		engineHash = virtualEngineCodeSHA256(stub.name)
+	}
+
+	return EngineCodeIdentity{
+		Name:   stub.name,
+		Path:   stub.name,
+		SHA256: engineHash,
+	}
 }

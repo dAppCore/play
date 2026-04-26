@@ -1,15 +1,12 @@
-name: sample-bundle
-title: Synthetic Sample Bundle
-author: Core Play Integration
+name: alpha
+title: Alpha
 year: 2026
 platform: synthetic
-genre: smoke
 licence: freeware
 artefact:
-    path: rom/rom.bin
-    sha256: 759337f0c13fdba72de3fe0cc3e39c283c49332033eb812cb071d599edf9d50a
+    path: rom/alpha.bin
+    sha256: f249439936d9578ab2432667abdaddd920b5867fd84c3a62b58eb31f0dd8391c
     size: 16
-    source: synthetic fixture
 runtime:
     engine: synthetic
     config: emulator.yaml

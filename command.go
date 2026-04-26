@@ -4,10 +4,12 @@ import "dappco.re/go/core"
 
 // Core Play command names.
 const (
-	CommandPlay       = "play"
-	CommandPlayList   = "play/list"
-	CommandPlayVerify = "play/verify"
-	CommandPlayBundle = "play/bundle"
+	CommandPlay        = "play"
+	CommandPlayList    = "play/list"
+	CommandPlayVerify  = "play/verify"
+	CommandPlayShield  = "play/shield-verify"
+	CommandPlayBundle  = "play/bundle"
+	CommandPlayEngines = "play/engines"
 )
 
 // Commands returns known Core Play command names in a stable order.
@@ -16,7 +18,9 @@ func Commands() []string {
 		CommandPlay,
 		CommandPlayList,
 		CommandPlayVerify,
+		CommandPlayShield,
 		CommandPlayBundle,
+		CommandPlayEngines,
 	}
 }
 
@@ -35,12 +39,20 @@ func Register(c *core.Core) {
 		Action:      cmdPlayList,
 	})
 	c.Command(CommandPlayVerify, core.Command{
-		Description: "Verify hash chain without running",
+		Description: "Verify Shield surfaces without running",
+		Action:      cmdPlayVerify,
+	})
+	c.Command(CommandPlayShield, core.Command{
+		Description: "Verify Shield surfaces without running",
 		Action:      cmdPlayVerify,
 	})
 	c.Command(CommandPlayBundle, core.Command{
 		Description: "Create a STIM bundle from artefact",
 		Action:      cmdPlayBundle,
+	})
+	c.Command(CommandPlayEngines, core.Command{
+		Description: "List available runtime engines",
+		Action:      cmdPlayEngines,
 	})
 }
 
@@ -101,6 +113,13 @@ func cmdPlayBundle(opts core.Options) core.Result {
 	}
 }
 
+func cmdPlayEngines(core.Options) core.Result {
+	return core.Result{
+		Value: RegisteredEngines(),
+		OK:    true,
+	}
+}
+
 // PlayRequest describes a request to prepare a bundle for launch.
 type PlayRequest struct {
 	BundlePath string
@@ -109,6 +128,7 @@ type PlayRequest struct {
 // ListRequest describes a request to enumerate bundles.
 type ListRequest struct {
 	Root string
+	JSON bool
 }
 
 // VerifyRequest describes a request to verify a bundle.
@@ -118,29 +138,32 @@ type VerifyRequest struct {
 
 // BundleRequest describes the input required to plan a new STIM bundle.
 type BundleRequest struct {
-	Name              string
-	Title             string
-	Author            string
-	Year              int
-	Platform          string
-	Genre             string
-	Licence           string
-	Engine            string
-	Profile           string
-	Acceleration      AccelerationMode
-	Filter            FrameFilter
-	ArtefactPath      string
-	ArtefactData      []byte
-	ArtefactSHA256    string
-	ArtefactSize      int64
-	ArtefactMediaType string
-	ArtefactSource    string
-	DistributionMode  string
-	BYOROM            bool
-	Entrypoint        string
-	RuntimeConfigPath string
-	VerificationChain string
-	SBOMPath          string
-	SavePath          string
-	ScreenshotPath    string
+	Name               string
+	Title              string
+	Author             string
+	Year               int
+	Platform           string
+	Genre              string
+	Licence            string
+	Engine             string
+	Profile            string
+	Acceleration       AccelerationMode
+	Filter             FrameFilter
+	ArtefactPath       string
+	ArtefactData       []byte
+	ArtefactSHA256     string
+	ArtefactSize       int64
+	ArtefactMediaType  string
+	ArtefactSource     string
+	EngineBinaryPath   string
+	EngineBinaryData   []byte
+	EngineBinarySHA256 string
+	DistributionMode   string
+	BYOROM             bool
+	Entrypoint         string
+	RuntimeConfigPath  string
+	VerificationChain  string
+	SBOMPath           string
+	SavePath           string
+	ScreenshotPath     string
 }

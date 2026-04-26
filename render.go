@@ -2,7 +2,6 @@ package play
 
 import (
 	"bytes"
-	"strconv"
 
 	"gopkg.in/yaml.v3"
 )
@@ -47,8 +46,11 @@ func (plan BundlePlan) Render() (RenderedBundle, error) {
 		return RenderedBundle{}, err
 	}
 
-	sbomData := renderSBOM(plan.Manifest)
-	checksumData := renderChecksumChain(plan.Manifest, manifestData, runtimeConfigData, sbomData)
+	sbomData, err := BuildSBOM(plan.Manifest)
+	if err != nil {
+		return RenderedBundle{}, err
+	}
+	checksumData := renderChecksumChain(plan.Manifest, manifestData, runtimeConfigData, sbomData, plan.EngineBinaryData)
 
 	files := []RenderedFile{
 		{
@@ -72,6 +74,12 @@ func (plan BundlePlan) Render() (RenderedBundle, error) {
 		files = append(files, RenderedFile{
 			Path: plan.Manifest.Artefact.Path,
 			Data: cloneBytes(plan.ArtefactData),
+		})
+	}
+	if len(plan.EngineBinaryData) > 0 && plan.Manifest.Verification.Engine.Path != "" {
+		files = append(files, RenderedFile{
+			Path: plan.Manifest.Verification.Engine.Path,
+			Data: cloneBytes(plan.EngineBinaryData),
 		})
 	}
 
@@ -100,26 +108,7 @@ func renderRuntimeConfig(manifest Manifest) ([]byte, error) {
 	return yaml.Marshal(runtimeConfig)
 }
 
-func renderSBOM(manifest Manifest) []byte {
-	var buffer bytes.Buffer
-	buffer.WriteString("{\n")
-	buffer.WriteString("  \"bomFormat\": \"CycloneDX\",\n")
-	buffer.WriteString("  \"specVersion\": \"1.5\",\n")
-	buffer.WriteString("  \"version\": 1,\n")
-	buffer.WriteString("  \"metadata\": {\n")
-	buffer.WriteString("    \"component\": {\n")
-	buffer.WriteString("      \"name\": ")
-	buffer.WriteString(strconv.Quote(manifest.Name))
-	buffer.WriteString(",\n")
-	buffer.WriteString("      \"type\": \"application\"\n")
-	buffer.WriteString("    }\n")
-	buffer.WriteString("  }\n")
-	buffer.WriteString("}\n")
-
-	return buffer.Bytes()
-}
-
-func renderChecksumChain(manifest Manifest, manifestData []byte, runtimeConfigData []byte, sbomData []byte) []byte {
+func renderChecksumChain(manifest Manifest, manifestData []byte, runtimeConfigData []byte, sbomData []byte, engineBinaryData []byte) []byte {
 	var buffer bytes.Buffer
 	buffer.WriteString(sha256Hex(manifestData))
 	buffer.WriteString("  manifest.yaml\n")
@@ -135,6 +124,12 @@ func renderChecksumChain(manifest Manifest, manifestData []byte, runtimeConfigDa
 	buffer.WriteString("  ")
 	buffer.WriteString(manifest.Artefact.Path)
 	buffer.WriteString("\n")
+	if len(engineBinaryData) > 0 && manifest.Verification.Engine.Path != "" {
+		buffer.WriteString(sha256Hex(engineBinaryData))
+		buffer.WriteString("  ")
+		buffer.WriteString(manifest.Verification.Engine.Path)
+		buffer.WriteString("\n")
+	}
 
 	return buffer.Bytes()
 }

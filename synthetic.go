@@ -31,6 +31,15 @@ func (engine SyntheticEngine) Verify() error {
 	return nil
 }
 
+// CodeIdentity returns the synthetic runtime integrity identity.
+func (engine SyntheticEngine) CodeIdentity() EngineCodeIdentity {
+	return EngineCodeIdentity{
+		Name:   engine.Name(),
+		Path:   engine.Name(),
+		SHA256: virtualEngineCodeSHA256(engine.Name()),
+	}
+}
+
 // PlanLaunch builds a launch plan for a synthetic bundle.
 func (engine SyntheticEngine) PlanLaunch(bundle Bundle) (LaunchPlan, error) {
 	if bundle.Manifest.Runtime.Engine != engine.Name() {

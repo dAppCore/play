@@ -62,8 +62,15 @@ func TestVerify_Bundle_Ugly(testingT *testing.T) {
 func verifiedBundleFS() fstest.MapFS {
 	romData := []byte("rom")
 	emulatorData := []byte("engine: retroarch\nprofile: genesis\n")
-	sbomData := []byte("{\"bomFormat\":\"CycloneDX\"}")
 	manifestData := []byte(validManifestYAMLWithArtefactHash(hashHex(romData)))
+	manifest, err := LoadManifest(manifestData)
+	if err != nil {
+		panic(err)
+	}
+	sbomData, err := BuildSBOM(manifest)
+	if err != nil {
+		panic(err)
+	}
 
 	checksumData := []byte(
 		hashHex(manifestData) + "  manifest.yaml\n" +

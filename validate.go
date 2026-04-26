@@ -121,6 +121,16 @@ func (manifest Manifest) Validate() ValidationErrors {
 
 	issues = append(issues, validatePathField("verification.chain", manifest.Verification.Chain, "manifest/verification-chain-invalid", "verification chain must be a relative bundle path")...)
 	issues = append(issues, validatePathField("verification.sbom", manifest.Verification.SBOM, "manifest/verification-sbom-invalid", "SBOM path must be a relative bundle path")...)
+	if manifest.Verification.Engine.Path != "" {
+		issues = append(issues, validatePathField("verification.engine.path", manifest.Verification.Engine.Path, "manifest/verification-engine-path-invalid", "engine path must be a relative bundle path")...)
+	}
+	if manifest.Verification.Engine.SHA256 != "" && !validSHA256(manifest.Verification.Engine.SHA256) {
+		issues = append(issues, ValidationIssue{
+			Code:    "manifest/verification-engine-sha256-invalid",
+			Field:   "verification.engine.sha256",
+			Message: "engine sha256 must be a valid sha256 value",
+		})
+	}
 
 	if manifest.Save.Path != "" {
 		issues = append(issues, validatePathField("save.path", manifest.Save.Path, "manifest/save-path-invalid", "save path must be a relative bundle path")...)

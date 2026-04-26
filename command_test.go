@@ -10,7 +10,7 @@ func TestCommand_Commands_Good(testingT *testing.T) {
 	testingT.Parallel()
 
 	commands := Commands()
-	if len(commands) != 4 {
+	if len(commands) != 6 {
 		testingT.Fatalf("unexpected command count: %d", len(commands))
 	}
 	if commands[0] != CommandPlay {
@@ -48,7 +48,7 @@ func TestCommand_Register_Good(testingT *testing.T) {
 	Register(c)
 
 	commands := c.Commands()
-	if len(commands) != 4 {
+	if len(commands) != 6 {
 		testingT.Fatalf("unexpected registered command count: %d", len(commands))
 	}
 	if commands[0] != CommandPlay {
@@ -69,7 +69,7 @@ func TestCommand_Register_Ugly(testingT *testing.T) {
 	Register(c)
 	Register(c)
 
-	if len(c.Commands()) != 4 {
+	if len(c.Commands()) != 6 {
 		testingT.Fatalf("duplicate Register changed command count: %d", len(c.Commands()))
 	}
 }

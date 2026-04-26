@@ -10,6 +10,7 @@ import (
 // Manifest describes a runnable STIM bundle.
 type Manifest struct {
 	Name         string       `yaml:"name"`
+	Version      string       `yaml:"version,omitempty"`
 	Title        string       `yaml:"title"`
 	Author       string       `yaml:"author,omitempty"`
 	Year         int          `yaml:"year,omitempty"`
@@ -52,9 +53,17 @@ type Preservation struct {
 
 // Verification describes integrity artefacts for a bundle.
 type Verification struct {
-	Chain         string `yaml:"chain"`
-	SBOM          string `yaml:"sbom"`
-	Deterministic bool   `yaml:"deterministic"`
+	Chain         string  `yaml:"chain"`
+	SBOM          string  `yaml:"sbom"`
+	Deterministic bool    `yaml:"deterministic"`
+	Engine        CodePin `yaml:"engine,omitempty"`
+}
+
+// CodePin records the runtime engine integrity value captured at bundle time.
+type CodePin struct {
+	Name   string `yaml:"name,omitempty" json:"name,omitempty"`
+	Path   string `yaml:"path,omitempty" json:"path,omitempty"`
+	SHA256 string `yaml:"sha256,omitempty" json:"sha256,omitempty"`
 }
 
 // Permissions describes runtime capabilities requested by a bundle.

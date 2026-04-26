@@ -65,7 +65,6 @@ func TestLaunch_PlanLaunch_Ugly(testingT *testing.T) {
 func dosBundleFS() fstest.MapFS {
 	romData := []byte("dos-rom")
 	emulatorData := []byte("engine: dosbox\nprofile: dos\n")
-	sbomData := []byte("{\"bomFormat\":\"CycloneDX\"}")
 	manifestData := []byte(`name: command-and-conquer
 title: "Command & Conquer"
 platform: dos
@@ -97,6 +96,14 @@ save:
 distribution:
   mode: catalogue
 `)
+	manifest, err := LoadManifest(manifestData)
+	if err != nil {
+		panic(err)
+	}
+	sbomData, err := BuildSBOM(manifest)
+	if err != nil {
+		panic(err)
+	}
 	checksumData := []byte(
 		hashHex(manifestData) + "  manifest.yaml\n" +
 			hashHex(emulatorData) + "  emulator.yaml\n" +

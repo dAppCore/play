@@ -2,7 +2,8 @@ package play
 
 // DOSBoxEngine is a first-pass DOSBox adapter scaffold.
 type DOSBoxEngine struct {
-	Binary string
+	Binary       string
+	BinarySHA256 string
 }
 
 // Name returns the engine identifier.
@@ -39,6 +40,21 @@ func (engine DOSBoxEngine) Verify() error {
 	}
 
 	return nil
+}
+
+// CodeIdentity returns the DOSBox runtime integrity identity.
+func (engine DOSBoxEngine) CodeIdentity() EngineCodeIdentity {
+	enginePath := defaultString(engine.Binary, engine.Name())
+	engineHash := engine.BinarySHA256
+	if engineHash == "" {
+		engineHash = virtualEngineCodeSHA256(engine.Name())
+	}
+
+	return EngineCodeIdentity{
+		Name:   engine.Name(),
+		Path:   enginePath,
+		SHA256: engineHash,
+	}
 }
 
 // Run executes a DOS artefact through Core's process primitive.

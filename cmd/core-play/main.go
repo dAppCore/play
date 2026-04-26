@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"flag"
 	"io"
 	"os"
@@ -16,11 +14,13 @@ import (
 type operation string
 
 const (
-	operationLaunch operation = "launch"
-	operationList   operation = "list"
-	operationVerify operation = "verify"
-	operationInfo   operation = "info"
-	operationBundle operation = "bundle"
+	operationLaunch       operation = "launch"
+	operationList         operation = "list"
+	operationVerify       operation = "verify"
+	operationShieldVerify operation = "shield-verify"
+	operationInfo         operation = "info"
+	operationBundle       operation = "bundle"
+	operationEngines      operation = "engines"
 )
 
 type invocation struct {
@@ -35,10 +35,13 @@ type invocation struct {
 	Genre     string
 	Licence   string
 	Engine    string
+	EngineBin string
 	Profile   string
 	ROM       string
 	Source    string
 	BYOROM    bool
+	JSON      bool
+	Archive   bool
 }
 
 func main() {
@@ -60,12 +63,14 @@ func run(ctx context.Context, c *core.Core, args []string, out io.Writer) error 
 	switch parsed.Operation {
 	case operationList:
 		return runList(parsed, out)
-	case operationVerify:
+	case operationVerify, operationShieldVerify:
 		return runVerify(parsed, out)
 	case operationInfo:
 		return runInfo(parsed, out)
 	case operationBundle:
 		return runBundle(parsed, out)
+	case operationEngines:
+		return runEngines(out)
 	default:
 		return runLaunch(ctx, c, parsed, out)
 	}
@@ -83,8 +88,12 @@ func parseInvocation(args []string) (invocation, error) {
 		return parseList(args[1:])
 	case "verify", "play/verify":
 		return parseNamed(operationVerify, args[1:])
+	case "shield-verify":
+		return parseNamed(operationShieldVerify, args[1:])
 	case "info":
 		return parseNamed(operationInfo, args[1:])
+	case "engines":
+		return invocation{Operation: operationEngines}, nil
 	case "bundle", "play/bundle":
 		return parseBundle(args[1:])
 	default:
@@ -97,12 +106,24 @@ func parsePlayAlias(args []string) (invocation, error) {
 		return invocation{Operation: operationLaunch, Bundle: "."}, nil
 	}
 	switch args[0] {
+	case "list":
+		return parseList(args[1:])
 	case "--list":
 		return parseList(args[1:])
+	case "verify":
+		return parseNamed(operationVerify, args[1:])
 	case "--verify":
 		return parseNamed(operationVerify, args[1:])
+	case "shield-verify":
+		return parseNamed(operationShieldVerify, args[1:])
+	case "info":
+		return parseNamed(operationInfo, args[1:])
 	case "--info":
 		return parseNamed(operationInfo, args[1:])
+	case "engines":
+		return invocation{Operation: operationEngines}, nil
+	case "bundle":
+		return parseBundle(args[1:])
 	default:
 		return parseLaunch(args)
 	}
@@ -111,6 +132,7 @@ func parsePlayAlias(args []string) (invocation, error) {
 func parseList(args []string) (invocation, error) {
 	flags := newFlagSet("list")
 	root := flags.String("root", "", "bundle root")
+	jsonOutput := flags.Bool("json", false, "JSON output")
 	if err := flags.Parse(args); err != nil {
 		return invocation{}, err
 	}
@@ -118,7 +140,7 @@ func parseList(args []string) (invocation, error) {
 		return invocation{}, core.E("play.parse", "list does not accept a bundle argument", nil)
 	}
 
-	return invocation{Operation: operationList, Root: *root}, nil
+	return invocation{Operation: operationList, Root: *root, JSON: *jsonOutput}, nil
 }
 
 func parseNamed(op operation, args []string) (invocation, error) {
@@ -168,10 +190,12 @@ func parseBundle(args []string) (invocation, error) {
 	genre := flags.String("genre", "", "genre")
 	licence := flags.String("licence", "freeware", "licence")
 	engine := flags.String("engine", "", "engine")
+	engineBinary := flags.String("engine-binary", "", "engine binary path")
 	profile := flags.String("profile", "", "runtime profile")
 	rom := flags.String("rom", "", "artefact path")
 	source := flags.String("source", "", "artefact source")
 	byorom := flags.Bool("byorom", false, "BYOROM mode")
+	archive := flags.Bool("archive", false, "write deterministic zip archive")
 	if err := flags.Parse(args); err != nil {
 		return invocation{}, err
 	}
@@ -196,10 +220,12 @@ func parseBundle(args []string) (invocation, error) {
 		Genre:     *genre,
 		Licence:   *licence,
 		Engine:    *engine,
+		EngineBin: *engineBinary,
 		Profile:   *profile,
 		ROM:       *rom,
 		Source:    *source,
 		BYOROM:    *byorom,
+		Archive:   *archive,
 	}, nil
 }
 
@@ -207,43 +233,6 @@ func newFlagSet(name string) *flag.FlagSet {
 	flags := flag.NewFlagSet(name, flag.ContinueOnError)
 	flags.SetOutput(io.Discard)
 	return flags
-}
-
-func runList(parsed invocation, out io.Writer) error {
-	root := bundleRoot(parsed)
-	service := play.NewService(os.DirFS(root), nil)
-	summaries, err := service.ListBundles(play.ListRequest{Root: "."})
-	if err != nil {
-		return err
-	}
-
-	for _, summary := range summaries {
-		core.Print(out, "%s\t%s\t%s\t%s", summary.Name, summary.Title, summary.Platform, summary.Engine)
-	}
-
-	return nil
-}
-
-func runVerify(parsed invocation, out io.Writer) error {
-	root := bundleRoot(parsed)
-	bundle, err := play.LoadBundle(os.DirFS(root), parsed.Bundle)
-	if err != nil {
-		return err
-	}
-
-	issues := bundle.Verify()
-	if issues.HasIssues() {
-		printIssues(out, issues)
-		return issues
-	}
-
-	core.Print(out, "%s verified", bundle.Manifest.Name)
-	core.Print(out, "hash chain:")
-	return printBundleFile(root, parsed.Bundle, bundle.Manifest.Verification.Chain, out)
-}
-
-func runInfo(parsed invocation, out io.Writer) error {
-	return printBundleFile(bundleRoot(parsed), parsed.Bundle, "manifest.yaml", out)
 }
 
 func runLaunch(ctx context.Context, c *core.Core, parsed invocation, out io.Writer) error {
@@ -286,44 +275,6 @@ func runLaunch(ctx context.Context, c *core.Core, parsed invocation, out io.Writ
 	})
 }
 
-func runBundle(parsed invocation, out io.Writer) error {
-	artefactData, err := os.ReadFile(parsed.ROM)
-	if err != nil {
-		return err
-	}
-
-	artefactPath := path.Join("rom", path.Base(parsed.ROM))
-	service := play.NewService(nil, nil)
-	rendered, err := service.RenderBundle(play.BundleRequest{
-		Name:           parsed.Name,
-		Title:          parsed.Title,
-		Author:         parsed.Author,
-		Year:           parsed.Year,
-		Platform:       parsed.Platform,
-		Genre:          parsed.Genre,
-		Licence:        parsed.Licence,
-		Engine:         parsed.Engine,
-		Profile:        parsed.Profile,
-		ArtefactPath:   artefactPath,
-		ArtefactData:   artefactData,
-		ArtefactSHA256: hashBytes(artefactData),
-		ArtefactSize:   int64(len(artefactData)),
-		ArtefactSource: parsed.Source,
-		BYOROM:         parsed.BYOROM,
-	})
-	if err != nil {
-		return err
-	}
-
-	targetRoot := bundleRoot(parsed)
-	if err := rendered.Write(localBundleWriter{Root: targetRoot}); err != nil {
-		return err
-	}
-
-	core.Print(out, "bundle created: %s", outputPath(targetRoot, rendered.Path))
-	return nil
-}
-
 func bundleRoot(parsed invocation) string {
 	if parsed.Root != "" {
 		return parsed.Root
@@ -359,39 +310,10 @@ func printIssues(out io.Writer, issues play.ValidationErrors) {
 	}
 }
 
-func hashBytes(data []byte) string {
-	sum := sha256.Sum256(data)
-	return hex.EncodeToString(sum[:])
-}
-
 func defaultText(value string, fallback string) string {
 	if value == "" {
 		return fallback
 	}
 
 	return value
-}
-
-type localBundleWriter struct {
-	Root string
-}
-
-func (writer localBundleWriter) EnsureDirectory(targetPath string) error {
-	return os.MkdirAll(writer.target(targetPath), 0755)
-}
-
-func (writer localBundleWriter) WriteFile(targetPath string, data []byte) error {
-	return os.WriteFile(writer.target(targetPath), data, 0644)
-}
-
-func (writer localBundleWriter) target(targetPath string) string {
-	return outputPath(writer.Root, targetPath)
-}
-
-func outputPath(root string, targetPath string) string {
-	if root == "" || root == "." {
-		return targetPath
-	}
-
-	return path.Join(root, targetPath)
 }

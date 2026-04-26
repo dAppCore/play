@@ -124,6 +124,19 @@ func normaliseBundlePath(value string) string {
 	return path.Clean(value)
 }
 
+func bundleFileData(bundle Bundle, filePath string) ([]byte, bool) {
+	if bundle.files == nil || !validBundlePath(filePath) {
+		return nil, false
+	}
+
+	data, err := fs.ReadFile(bundle.files, normaliseBundlePath(filePath))
+	if err != nil {
+		return nil, false
+	}
+
+	return data, true
+}
+
 // PathError reports invalid bundle or manifest paths.
 type PathError struct {
 	Kind    string

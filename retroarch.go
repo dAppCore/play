@@ -5,6 +5,7 @@ import "path"
 // RetroArchEngine is a first-pass RetroArch adapter scaffold.
 type RetroArchEngine struct {
 	Binary        string
+	BinarySHA256  string
 	CoreDirectory string
 }
 
@@ -51,6 +52,21 @@ func (engine RetroArchEngine) Verify() error {
 	}
 
 	return nil
+}
+
+// CodeIdentity returns the RetroArch runtime integrity identity.
+func (engine RetroArchEngine) CodeIdentity() EngineCodeIdentity {
+	enginePath := defaultString(engine.Binary, engine.Name())
+	engineHash := engine.BinarySHA256
+	if engineHash == "" {
+		engineHash = virtualEngineCodeSHA256(engine.Name())
+	}
+
+	return EngineCodeIdentity{
+		Name:   engine.Name(),
+		Path:   enginePath,
+		SHA256: engineHash,
+	}
 }
 
 // Run executes a RetroArch artefact through Core's process primitive.

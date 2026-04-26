@@ -170,7 +170,7 @@ func TestRender_Service_Ugly(testingT *testing.T) {
 	}
 
 	sbomData := string(renderedFileData(rendered, "sbom.json"))
-	if !containsLine(sbomData, `"name": "quoted-title"`) {
+	if !containsLine(sbomData, `"name":"quoted-title"`) {
 		testingT.Fatalf("SBOM output missing quoted bundle name: %q", sbomData)
 	}
 }

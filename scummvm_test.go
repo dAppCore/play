@@ -1,6 +1,11 @@
 package play
 
-import "testing"
+import (
+	"context"
+	"testing"
+
+	"dappco.re/go/core"
+)
 
 func TestScummvm_Verify_Good(testingT *testing.T) {
 	testingT.Parallel()
@@ -47,6 +52,40 @@ func TestScummvm_Verify_Ugly(testingT *testing.T) {
 	}
 }
 
+func TestScummvm_ProcessVerify_Good(testingT *testing.T) {
+	testingT.Parallel()
+
+	c := scummVMCore("ScummVM 2.8.0")
+	engine := ScummVMEngine{Binary: "scummvm", Core: c}
+	if err := engine.Verify(); err != nil {
+		testingT.Fatalf("Verify returned error: %v", err)
+	}
+}
+
+func TestScummvm_ProcessVerify_Bad(testingT *testing.T) {
+	testingT.Parallel()
+
+	c := scummVMCore("ScummVM 2.6.1")
+	err := (ScummVMEngine{Binary: "scummvm", Core: c}).Verify()
+	if err == nil {
+		testingT.Fatal("Verify expected an error for an unsupported ScummVM version")
+	}
+}
+
+func TestScummvm_ProcessVerify_Ugly(testingT *testing.T) {
+	testingT.Parallel()
+
+	c := core.New()
+	c.Action("process.run", func(context.Context, core.Options) core.Result {
+		return core.Result{Value: "missing scummvm", OK: false}
+	})
+
+	err := (ScummVMEngine{Binary: "scummvm", Core: c}).Verify()
+	if err == nil {
+		testingT.Fatal("Verify expected an error when process verification fails")
+	}
+}
+
 func TestScummvm_PlanLaunch_Good(testingT *testing.T) {
 	testingT.Parallel()
 
@@ -63,13 +102,25 @@ func TestScummvm_PlanLaunch_Good(testingT *testing.T) {
 	if plan.Engine != "scummvm" {
 		testingT.Fatalf("unexpected engine: %q", plan.Engine)
 	}
-	if len(plan.Arguments) != 2 {
+	if len(plan.Arguments) != 3 {
 		testingT.Fatalf("unexpected argument count: %d", len(plan.Arguments))
 	}
 	if plan.Arguments[0] != "--path=game/BASS" {
 		testingT.Fatalf("unexpected data path argument: %q", plan.Arguments[0])
 	}
-	if plan.Arguments[1] != "sky" {
-		testingT.Fatalf("unexpected game id argument: %q", plan.Arguments[1])
+	if plan.Arguments[1] != "--savepath=saves/" {
+		testingT.Fatalf("unexpected save path argument: %q", plan.Arguments[1])
 	}
+	if plan.Arguments[2] != "sky" {
+		testingT.Fatalf("unexpected game id argument: %q", plan.Arguments[2])
+	}
+}
+
+func scummVMCore(versionOutput string) *core.Core {
+	c := core.New()
+	c.Action("process.run", func(context.Context, core.Options) core.Result {
+		return core.Result{Value: versionOutput, OK: true}
+	})
+
+	return c
 }

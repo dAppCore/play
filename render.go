@@ -68,6 +68,12 @@ func (plan BundlePlan) Render() (RenderedBundle, error) {
 			Data: checksumData,
 		},
 	}
+	if len(plan.ArtefactData) > 0 {
+		files = append(files, RenderedFile{
+			Path: plan.Manifest.Artefact.Path,
+			Data: cloneBytes(plan.ArtefactData),
+		})
+	}
 
 	return RenderedBundle{
 		Path:  plan.Path,

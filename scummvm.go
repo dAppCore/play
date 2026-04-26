@@ -44,6 +44,30 @@ func (engine ScummVMEngine) Verify() error {
 	return nil
 }
 
+// Run executes a ScummVM artefact through Core's process primitive.
+func (engine ScummVMEngine) Run(artefact string, config EngineConfig) error {
+	if err := engine.Verify(); err != nil {
+		return err
+	}
+	if config.Profile == "" {
+		return EngineError{
+			Kind:    "engine/profile-required",
+			Name:    engine.Name(),
+			Message: "runtime profile is required",
+		}
+	}
+
+	return runLaunchPlan(LaunchPlan{
+		Engine:           engine.Name(),
+		Executable:       engine.Binary,
+		Arguments:        []string{"--path=" + path.Dir(artefact), config.Profile},
+		WorkingDirectory: ".",
+		Entrypoint:       artefact,
+		RuntimeConfig:    config.ConfigPath,
+		NetworkAllowed:   config.NetworkAllowed,
+	}, config)
+}
+
 // PlanLaunch builds a launch plan for a ScummVM-backed bundle.
 func (engine ScummVMEngine) PlanLaunch(bundle Bundle) (LaunchPlan, error) {
 	if err := engine.Verify(); err != nil {

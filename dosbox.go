@@ -41,6 +41,28 @@ func (engine DOSBoxEngine) Verify() error {
 	return nil
 }
 
+// Run executes a DOS artefact through Core's process primitive.
+func (engine DOSBoxEngine) Run(artefact string, config EngineConfig) error {
+	if err := engine.Verify(); err != nil {
+		return err
+	}
+
+	arguments := []string{artefact}
+	if config.ConfigPath != "" {
+		arguments = append(arguments, "-conf", config.ConfigPath)
+	}
+
+	return runLaunchPlan(LaunchPlan{
+		Engine:           engine.Name(),
+		Executable:       engine.Binary,
+		Arguments:        arguments,
+		WorkingDirectory: ".",
+		Entrypoint:       artefact,
+		RuntimeConfig:    config.ConfigPath,
+		NetworkAllowed:   config.NetworkAllowed,
+	}, config)
+}
+
 // PlanLaunch builds a launch plan for a DOS bundle.
 func (engine DOSBoxEngine) PlanLaunch(bundle Bundle) (LaunchPlan, error) {
 	if err := engine.Verify(); err != nil {

@@ -47,7 +47,7 @@ func TestRetroarch_Verify_Ugly(testingT *testing.T) {
 	}
 }
 
-func TestRetroarch_PlanLaunch_Genesis(testingT *testing.T) {
+func TestRetroarch_PlanLaunch_Good(testingT *testing.T) {
 	testingT.Parallel()
 
 	bundle, err := LoadBundle(verifiedBundleFS(), ".")

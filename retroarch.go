@@ -53,6 +53,40 @@ func (engine RetroArchEngine) Verify() error {
 	return nil
 }
 
+// Run executes a RetroArch artefact through Core's process primitive.
+func (engine RetroArchEngine) Run(artefact string, config EngineConfig) error {
+	if err := engine.Verify(); err != nil {
+		return err
+	}
+	if config.Profile == "" {
+		return EngineError{
+			Kind:    "engine/profile-required",
+			Name:    engine.Name(),
+			Message: "runtime profile is required",
+		}
+	}
+
+	coreName, found := retroArchCoreName(config.Profile)
+	if !found {
+		return EngineError{
+			Kind:    "engine/profile-unsupported",
+			Name:    engine.Name(),
+			Message: "runtime profile is not supported by RetroArch",
+		}
+	}
+
+	corePath := path.Join(retroArchCoreDirectory(engine), coreName)
+	return runLaunchPlan(LaunchPlan{
+		Engine:           engine.Name(),
+		Executable:       engine.Binary,
+		Arguments:        []string{"-L", corePath, artefact},
+		WorkingDirectory: ".",
+		Entrypoint:       artefact,
+		RuntimeConfig:    config.ConfigPath,
+		NetworkAllowed:   config.NetworkAllowed,
+	}, config)
+}
+
 // PlanLaunch builds a launch plan for a RetroArch-backed bundle.
 func (engine RetroArchEngine) PlanLaunch(bundle Bundle) (LaunchPlan, error) {
 	if err := engine.Verify(); err != nil {

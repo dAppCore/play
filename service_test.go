@@ -116,7 +116,7 @@ func TestService_PreparePlay_Good(testingT *testing.T) {
 	}
 }
 
-func TestService_PreparePlay_DOSBoxLaunchPlan(testingT *testing.T) {
+func TestService_PreparePlayDOSBox_Good(testingT *testing.T) {
 	testingT.Parallel()
 
 	registry := NewRegistry()
@@ -138,7 +138,7 @@ func TestService_PreparePlay_DOSBoxLaunchPlan(testingT *testing.T) {
 	}
 }
 
-func TestService_PreparePlay_RetroArchLaunchPlan(testingT *testing.T) {
+func TestService_PreparePlayRetroArch_Good(testingT *testing.T) {
 	testingT.Parallel()
 
 	registry := NewRegistry()
@@ -163,7 +163,7 @@ func TestService_PreparePlay_RetroArchLaunchPlan(testingT *testing.T) {
 	}
 }
 
-func TestService_PreparePlay_ScummVMLaunchPlan(testingT *testing.T) {
+func TestService_PreparePlayScummVM_Good(testingT *testing.T) {
 	testingT.Parallel()
 
 	registry := NewRegistry()

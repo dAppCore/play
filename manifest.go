@@ -18,6 +18,7 @@ type Manifest struct {
 	Licence      string       `yaml:"licence"`
 	Artefact     Artefact     `yaml:"artefact"`
 	Runtime      Runtime      `yaml:"runtime"`
+	Preservation Preservation `yaml:"preservation,omitempty"`
 	Verification Verification `yaml:"verification"`
 	Permissions  Permissions  `yaml:"permissions"`
 	Save         Save         `yaml:"save,omitempty"`
@@ -41,6 +42,12 @@ type Runtime struct {
 	Entrypoint   string           `yaml:"entrypoint,omitempty"`
 	Acceleration AccelerationMode `yaml:"acceleration,omitempty"`
 	Filter       FrameFilter      `yaml:"filter,omitempty"`
+}
+
+// Preservation describes the RFC §2.1 hash-chain status.
+type Preservation struct {
+	Verified bool   `yaml:"verified"`
+	Chain    string `yaml:"chain"`
 }
 
 // Verification describes integrity artefacts for a bundle.
@@ -84,6 +91,7 @@ func LoadManifest(data []byte) (Manifest, error) {
 	if err := decoder.Decode(&manifest); err != nil {
 		return Manifest{}, err
 	}
+	manifest = normaliseManifest(manifest)
 
 	var trailing yaml.Node
 	err := decoder.Decode(&trailing)
@@ -98,6 +106,20 @@ func LoadManifest(data []byte) (Manifest, error) {
 		Kind:    "manifest/multiple-documents",
 		Message: "manifest must contain exactly one YAML document",
 	}
+}
+
+func normaliseManifest(manifest Manifest) Manifest {
+	if manifest.Preservation.Chain == "" && manifest.Verification.Chain != "" {
+		manifest.Preservation.Chain = manifest.Verification.Chain
+	}
+	if manifest.Verification.Chain == "" && manifest.Preservation.Chain != "" {
+		manifest.Verification.Chain = manifest.Preservation.Chain
+	}
+	if manifest.Verification.SBOM == "" && manifest.Preservation.Chain != "" {
+		manifest.Verification.SBOM = "sbom.json"
+	}
+
+	return manifest
 }
 
 // ParseError reports manifest parsing problems.

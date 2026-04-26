@@ -18,6 +18,17 @@ func TestManifest_LoadManifest_Good(testingT *testing.T) {
 	if manifest.Runtime.Engine != "retroarch" {
 		testingT.Fatalf("unexpected engine: %q", manifest.Runtime.Engine)
 	}
+
+	preserved, err := LoadManifest([]byte(validPreservationManifestYAML()))
+	if err != nil {
+		testingT.Fatalf("LoadManifest returned preservation error: %v", err)
+	}
+	if preserved.Verification.Chain != "checksums.sha256" {
+		testingT.Fatalf("unexpected preservation chain: %q", preserved.Verification.Chain)
+	}
+	if preserved.Verification.SBOM != "sbom.json" {
+		testingT.Fatalf("unexpected default SBOM path: %q", preserved.Verification.SBOM)
+	}
 }
 
 func TestManifest_LoadManifest_Bad(testingT *testing.T) {
@@ -90,5 +101,22 @@ save:
 distribution:
   mode: catalogue
   byorom: false
+`
+}
+
+func validPreservationManifestYAML() string {
+	return `name: sample-bundle
+title: "Synthetic Sample Bundle"
+platform: synthetic
+licence: freeware
+artefact:
+  path: rom/rom.bin
+  sha256: "` + validArtefactSHA256 + `"
+runtime:
+  engine: synthetic
+  config: emulator.yaml
+preservation:
+  verified: true
+  chain: checksums.sha256
 `
 }

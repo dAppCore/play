@@ -1,12 +1,31 @@
 package play
 
-import "sort"
+import (
+	"context"
+	"io"
+	"sort"
+
+	"dappco.re/go/core"
+)
 
 // Engine defines a runnable STIM runtime adapter.
 type Engine interface {
 	Name() string
 	Platforms() []string
+	Run(artefact string, config EngineConfig) error
 	Verify() error
+}
+
+// EngineConfig carries runtime context into an engine adapter.
+type EngineConfig struct {
+	Core             *core.Core
+	Context          context.Context
+	WorkingDirectory string
+	ConfigPath       string
+	Profile          string
+	SaveRoot         string
+	NetworkAllowed   bool
+	Output           io.Writer
 }
 
 // Registry stores known engines by name.
@@ -94,6 +113,57 @@ func ResolveEngine(name string) (Engine, bool) {
 // RegisteredEngines lists package-level engine names in a stable order.
 func RegisteredEngines() []string {
 	return defaultRegistry.Names()
+}
+
+func runLaunchPlan(plan LaunchPlan, config EngineConfig) error {
+	if config.Core == nil {
+		return EngineError{
+			Kind:    "engine/process-unavailable",
+			Name:    plan.Engine,
+			Message: "core process primitive is required to run this engine",
+		}
+	}
+
+	runContext := config.Context
+	if runContext == nil {
+		runContext = context.Background()
+	}
+
+	workingDirectory := plan.WorkingDirectory
+	if config.WorkingDirectory != "" {
+		workingDirectory = config.WorkingDirectory
+	}
+
+	result := config.Core.Process().RunIn(runContext, workingDirectory, plan.Executable, plan.Arguments...)
+	if !result.OK {
+		return EngineError{
+			Kind:    "engine/run-failed",
+			Name:    plan.Engine,
+			Message: resultMessage(result.Value),
+		}
+	}
+
+	if config.Output != nil {
+		if output, ok := result.Value.(string); ok && output != "" {
+			core.Print(config.Output, "%s", output)
+		}
+	}
+
+	return nil
+}
+
+func resultMessage(value any) string {
+	if value == nil {
+		return "process execution failed"
+	}
+	if err, ok := value.(error); ok {
+		return err.Error()
+	}
+	if message, ok := value.(string); ok {
+		return message
+	}
+
+	return core.Sprint(value)
 }
 
 // EngineError reports registry or engine verification failures.

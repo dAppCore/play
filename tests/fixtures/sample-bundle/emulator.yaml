@@ -1,0 +1,11 @@
+engine: synthetic
+platform: synthetic
+input:
+  type: none
+  mapping: smoke
+display:
+  scale: 1x
+  filter: nearest
+audio:
+  enabled: false
+  sample_rate: 44100

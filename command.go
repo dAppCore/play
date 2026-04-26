@@ -1,5 +1,7 @@
 package play
 
+import "dappco.re/go/core"
+
 // Core Play command names.
 const (
 	CommandPlay       = "play"
@@ -15,6 +17,87 @@ func Commands() []string {
 		CommandPlayList,
 		CommandPlayVerify,
 		CommandPlayBundle,
+	}
+}
+
+// Register installs Core Play commands on a Core runtime.
+func Register(c *core.Core) {
+	if c == nil {
+		return
+	}
+
+	c.Command(CommandPlay, core.Command{
+		Description: "Run preserved software in a STIM bundle",
+		Action:      cmdPlay,
+	})
+	c.Command(CommandPlayList, core.Command{
+		Description: "List available STIM bundles",
+		Action:      cmdPlayList,
+	})
+	c.Command(CommandPlayVerify, core.Command{
+		Description: "Verify hash chain without running",
+		Action:      cmdPlayVerify,
+	})
+	c.Command(CommandPlayBundle, core.Command{
+		Description: "Create a STIM bundle from artefact",
+		Action:      cmdPlayBundle,
+	})
+}
+
+func cmdPlay(opts core.Options) core.Result {
+	bundlePath := opts.String("_arg")
+	if bundlePath == "" {
+		bundlePath = "."
+	}
+
+	return core.Result{
+		Value: PlayRequest{BundlePath: bundlePath},
+		OK:    true,
+	}
+}
+
+func cmdPlayList(opts core.Options) core.Result {
+	root := opts.String("root")
+	if root == "" {
+		root = "."
+	}
+
+	return core.Result{
+		Value: ListRequest{Root: root},
+		OK:    true,
+	}
+}
+
+func cmdPlayVerify(opts core.Options) core.Result {
+	bundlePath := opts.String("_arg")
+	if bundlePath == "" {
+		bundlePath = "."
+	}
+
+	return core.Result{
+		Value: VerifyRequest{BundlePath: bundlePath},
+		OK:    true,
+	}
+}
+
+func cmdPlayBundle(opts core.Options) core.Result {
+	return core.Result{
+		Value: BundleRequest{
+			Name:              opts.String("name"),
+			Title:             opts.String("title"),
+			Author:            opts.String("author"),
+			Platform:          opts.String("platform"),
+			Genre:             opts.String("genre"),
+			Licence:           opts.String("licence"),
+			Engine:            opts.String("engine"),
+			Profile:           opts.String("profile"),
+			ArtefactPath:      opts.String("artefact"),
+			ArtefactSource:    opts.String("source"),
+			RuntimeConfigPath: opts.String("config"),
+			VerificationChain: opts.String("chain"),
+			SBOMPath:          opts.String("sbom"),
+		},
+		OK: true,
 	}
 }
 
@@ -47,6 +130,7 @@ type BundleRequest struct {
 	Acceleration      AccelerationMode
 	Filter            FrameFilter
 	ArtefactPath      string
+	ArtefactData      []byte
 	ArtefactSHA256    string
 	ArtefactSize      int64
 	ArtefactMediaType string

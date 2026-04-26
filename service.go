@@ -40,8 +40,9 @@ type PlayPlan struct {
 
 // BundlePlan describes a planned bundle before any files are written.
 type BundlePlan struct {
-	Path     string
-	Manifest Manifest
+	Path         string
+	Manifest     Manifest
+	ArtefactData []byte
 }
 
 // NewService creates a service from a bundle filesystem and engine registry.
@@ -206,6 +207,10 @@ func (service Service) PlanBundle(request BundleRequest) (BundlePlan, Validation
 			SBOM:          sbomPath,
 			Deterministic: true,
 		},
+		Preservation: Preservation{
+			Verified: true,
+			Chain:    verificationChainPath,
+		},
 		Permissions: Permissions{
 			FileSystem: FileSystemPermissions{
 				Read: []string{
@@ -233,8 +238,9 @@ func (service Service) PlanBundle(request BundleRequest) (BundlePlan, Validation
 	}
 
 	return BundlePlan{
-		Path:     request.Name,
-		Manifest: manifest,
+		Path:         request.Name,
+		Manifest:     manifest,
+		ArtefactData: cloneBytes(request.ArtefactData),
 	}, nil
 }
 

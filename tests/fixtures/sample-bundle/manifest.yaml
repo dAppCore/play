@@ -1,0 +1,21 @@
+name: sample-bundle
+title: "Synthetic Sample Bundle"
+author: "Core Play Integration"
+year: 2026
+platform: synthetic
+genre: smoke
+
+artefact:
+  path: rom/rom.bin
+  sha256: "759337f0c13fdba72de3fe0cc3e39c283c49332033eb812cb071d599edf9d50a"
+  size: 16
+  source: "synthetic fixture"
+
+runtime:
+  engine: synthetic
+  config: emulator.yaml
+
+licence: freeware
+preservation:
+  verified: true
+  chain: checksums.sha256

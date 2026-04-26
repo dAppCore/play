@@ -77,6 +77,10 @@ func (stub stubEngine) Platforms() []string {
 	return stub.platforms
 }
 
+func (stub stubEngine) Run(string, EngineConfig) error {
+	return nil
+}
+
 func (stub stubEngine) Verify() error {
 	return stub.verifyErr
 }

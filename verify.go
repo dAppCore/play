@@ -13,6 +13,11 @@ type ChecksumEntry struct {
 	SHA256 string
 }
 
+type checksumRequirement struct {
+	Field string
+	Path  string
+}
+
 // Verify checks a bundle's checksum chain, artefact hash, and engine availability.
 func (bundle Bundle) Verify() ValidationErrors {
 	return bundle.VerifyWithRegistry(defaultRegistry)
@@ -43,7 +48,7 @@ func (bundle Bundle) VerifyWithRegistry(registry *Registry) ValidationErrors {
 		})
 	}
 
-	checksumIssues, artefactHash := verifyChecksumEntries(bundle.files, entries, bundle.Manifest.Artefact.Path)
+	checksumIssues, artefactHash := verifyChecksumChain(bundle.files, bundle.Manifest, entries)
 	issues = append(issues, checksumIssues...)
 
 	if artefactHash == "" {
@@ -117,10 +122,10 @@ func ParseChecksumFile(data []byte) ([]ChecksumEntry, error) {
 				Message: "checksum entry must contain a valid sha256 value",
 			}
 		}
-		if !validBundlePath(entry.Path) {
+		if !validBundlePath(entry.Path) || normaliseBundlePath(entry.Path) != entry.Path {
 			return nil, ChecksumParseError{
 				Kind:    "checksum/invalid-path",
-				Message: "checksum entry path must be a relative bundle path",
+				Message: "checksum entry path must be a canonical relative bundle path",
 			}
 		}
 
@@ -130,12 +135,23 @@ func ParseChecksumFile(data []byte) ([]ChecksumEntry, error) {
 	return entries, nil
 }
 
-func verifyChecksumEntries(filesystem fs.FS, entries []ChecksumEntry, artefactPath string) (ValidationErrors, string) {
+func verifyChecksumChain(filesystem fs.FS, manifest Manifest, entries []ChecksumEntry) (ValidationErrors, string) {
 	var issues ValidationErrors
 	artefactHash := ""
+	recordedPaths := map[string]ChecksumEntry{}
 
 	for _, entry := range entries {
 		expectedPath := normaliseBundlePath(entry.Path)
+		if _, exists := recordedPaths[expectedPath]; exists {
+			issues = append(issues, ValidationIssue{
+				Code:    "hash/duplicate-entry",
+				Field:   entry.Path,
+				Message: "checksum chain contains a duplicate path entry",
+			})
+		} else {
+			recordedPaths[expectedPath] = entry
+		}
+
 		data, err := fs.ReadFile(filesystem, expectedPath)
 		if err != nil {
 			issues = append(issues, ValidationIssue{
@@ -154,12 +170,93 @@ func verifyChecksumEntries(filesystem fs.FS, entries []ChecksumEntry, artefactPa
 				Message: "file hash does not match the verification chain",
 			})
 		}
-		if expectedPath == normaliseBundlePath(artefactPath) {
+		if expectedPath == normaliseBundlePath(manifest.Artefact.Path) {
 			artefactHash = actualHash
 		}
 	}
 
+	issues = append(issues, verifyRequiredChecksumEntries(manifest, recordedPaths)...)
+	issues = append(issues, verifyChecksumCoverage(filesystem, manifest, recordedPaths)...)
+
 	return issues, artefactHash
+}
+
+func verifyRequiredChecksumEntries(manifest Manifest, recordedPaths map[string]ChecksumEntry) ValidationErrors {
+	var issues ValidationErrors
+	seenRequirements := map[string]struct{}{}
+
+	for _, requirement := range requiredChecksumEntries(manifest) {
+		if !validBundlePath(requirement.Path) {
+			continue
+		}
+
+		requiredPath := normaliseBundlePath(requirement.Path)
+		if _, seen := seenRequirements[requiredPath]; seen {
+			continue
+		}
+		seenRequirements[requiredPath] = struct{}{}
+
+		if _, recorded := recordedPaths[requiredPath]; !recorded {
+			issues = append(issues, ValidationIssue{
+				Code:    "hash/chain-entry-missing",
+				Field:   requirement.Field,
+				Message: "required bundle file is missing from the verification chain",
+			})
+		}
+	}
+
+	return issues
+}
+
+func requiredChecksumEntries(manifest Manifest) []checksumRequirement {
+	requirements := []checksumRequirement{
+		{
+			Field: "manifest",
+			Path:  "manifest.yaml",
+		},
+		{
+			Field: "runtime.config",
+			Path:  manifest.Runtime.Config,
+		},
+		{
+			Field: "verification.sbom",
+			Path:  manifest.Verification.SBOM,
+		},
+		{
+			Field: "artefact.path",
+			Path:  manifest.Artefact.Path,
+		},
+	}
+	return requirements
+}
+
+func verifyChecksumCoverage(filesystem fs.FS, manifest Manifest, recordedPaths map[string]ChecksumEntry) ValidationErrors {
+	var issues ValidationErrors
+	chainPath := normaliseBundlePath(manifest.Verification.Chain)
+
+	_ = fs.WalkDir(filesystem, ".", func(candidatePath string, entry fs.DirEntry, walkErr error) error {
+		if walkErr != nil || entry.IsDir() {
+			return nil
+		}
+
+		cleanPath := normaliseBundlePath(candidatePath)
+		if cleanPath == "." || cleanPath == chainPath {
+			return nil
+		}
+		if _, recorded := recordedPaths[cleanPath]; recorded {
+			return nil
+		}
+
+		issues = append(issues, ValidationIssue{
+			Code:    "hash/unrecorded-file",
+			Field:   cleanPath,
+			Message: "bundle file is not recorded in the verification chain",
+		})
+
+		return nil
+	})
+
+	return issues
 }
 
 func sha256Hex(data []byte) string {

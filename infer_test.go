@@ -109,3 +109,30 @@ func TestInfer_DOSDefaults_Good(testingT *testing.T) {
 		testingT.Fatalf("unexpected inferred filter: %q", plan.Manifest.Runtime.Filter)
 	}
 }
+
+func TestInfer_DOSBoxXDefaults_Good(testingT *testing.T) {
+	testingT.Parallel()
+
+	service := NewService(nil, nil)
+	plan, issues := service.PlanBundle(BundleRequest{
+		Name:           "pc98-sample",
+		Title:          "PC-98 Sample",
+		Platform:       "pc-98",
+		Licence:        "freeware",
+		ArtefactPath:   "rom/pc98.hdi",
+		ArtefactSHA256: validArtefactSHA256,
+	})
+	if issues.HasIssues() {
+		testingT.Fatalf("PlanBundle returned issues: %v", issues)
+	}
+
+	if plan.Manifest.Runtime.Engine != "dosbox-x" {
+		testingT.Fatalf("unexpected inferred engine: %q", plan.Manifest.Runtime.Engine)
+	}
+	if plan.Manifest.Runtime.Profile != "pc-98" {
+		testingT.Fatalf("unexpected inferred profile: %q", plan.Manifest.Runtime.Profile)
+	}
+	if plan.Manifest.Runtime.Filter != FrameFilterNearest {
+		testingT.Fatalf("unexpected inferred filter: %q", plan.Manifest.Runtime.Filter)
+	}
+}

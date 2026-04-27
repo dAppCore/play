@@ -59,6 +59,84 @@ func TestVerify_Bundle_Ugly(testingT *testing.T) {
 	}
 }
 
+func TestVerify_ChecksumChainCoverage_Good(testingT *testing.T) {
+	testingT.Parallel()
+
+	bundle, err := LoadBundle(verifiedBundleFS(), ".")
+	if err != nil {
+		testingT.Fatalf("LoadBundle returned error: %v", err)
+	}
+
+	registry := NewRegistry()
+	if err := registry.Register(stubEngine{name: "retroarch", platforms: []string{"sega-genesis"}}); err != nil {
+		testingT.Fatalf("Register returned error: %v", err)
+	}
+
+	issues := bundle.VerifyWithRegistry(registry)
+	if issues.HasIssues() {
+		testingT.Fatalf("VerifyWithRegistry returned issues: %v", issues)
+	}
+}
+
+func TestVerify_ChecksumChainCoverage_Bad(testingT *testing.T) {
+	testingT.Parallel()
+
+	filesystem := verifiedBundleFS()
+	filesystem["payload/setup.sh"] = &fstest.MapFile{
+		Data: []byte("echo untracked"),
+	}
+	bundle, err := LoadBundle(filesystem, ".")
+	if err != nil {
+		testingT.Fatalf("LoadBundle returned error: %v", err)
+	}
+
+	registry := NewRegistry()
+	if err := registry.Register(stubEngine{name: "retroarch", platforms: []string{"sega-genesis"}}); err != nil {
+		testingT.Fatalf("Register returned error: %v", err)
+	}
+
+	issues := bundle.VerifyWithRegistry(registry)
+	if !hasIssueCode(issues, "hash/unrecorded-file") {
+		testingT.Fatalf("VerifyWithRegistry missing hash/unrecorded-file issue: %v", issues)
+	}
+}
+
+func TestVerify_ChecksumChainCoverage_Ugly(testingT *testing.T) {
+	testingT.Parallel()
+
+	filesystem := verifiedBundleFS()
+	filesystem["checksums.sha256"] = &fstest.MapFile{
+		Data: []byte(
+			hashHex(filesystem["emulator.yaml"].Data) + "  emulator.yaml\n" +
+				hashHex(filesystem["sbom.json"].Data) + "  sbom.json\n" +
+				hashHex(filesystem["rom/MegaLoMania.zip"].Data) + "  rom/MegaLoMania.zip\n",
+		),
+	}
+	bundle, err := LoadBundle(filesystem, ".")
+	if err != nil {
+		testingT.Fatalf("LoadBundle returned error: %v", err)
+	}
+
+	registry := NewRegistry()
+	if err := registry.Register(stubEngine{name: "retroarch", platforms: []string{"sega-genesis"}}); err != nil {
+		testingT.Fatalf("Register returned error: %v", err)
+	}
+
+	issues := bundle.VerifyWithRegistry(registry)
+	if !hasIssueCode(issues, "hash/chain-entry-missing") {
+		testingT.Fatalf("VerifyWithRegistry missing hash/chain-entry-missing issue: %v", issues)
+	}
+}
+
+func TestVerify_ParseChecksumFile_Ugly(testingT *testing.T) {
+	testingT.Parallel()
+
+	_, err := ParseChecksumFile([]byte(validArtefactSHA256 + "  rom/../escape.bin\n"))
+	if err == nil {
+		testingT.Fatal("ParseChecksumFile expected an error for a non-canonical path")
+	}
+}
+
 func verifiedBundleFS() fstest.MapFS {
 	romData := []byte("rom")
 	emulatorData := []byte("engine: retroarch\nprofile: genesis\n")

@@ -98,7 +98,8 @@ The runtime used to execute the artefact:
 - compatibility layer
 - native runner
 
-Examples include DOSBox, ScummVM, RetroArch-based adapters, or a native wrapper.
+Examples include DOSBox, DOSBox-X, ScummVM, RetroArch-based adapters, or a
+native wrapper.
 
 ### 2.4 Bundle
 
@@ -293,6 +294,14 @@ At minimum:
 
 The hash list must be stable under deterministic rebuilds.
 
+The verification chain is treated as a coverage contract:
+
+- paths must be canonical relative bundle paths
+- duplicate path entries are invalid
+- required files must appear in the chain
+- material files not recorded in the chain are reported as unverified content
+- the chain file itself is exempt from self-hashing
+
 ### 4.7 SBOM
 
 `sbom.json` represents the bundle inventory, not only the engine binary.
@@ -441,6 +450,10 @@ Default runtime policy:
 
 Manifest permissions can narrow access further. They should not silently widen
 host access beyond platform policy.
+
+Before launch, the resolved engine plan must be checked against the prepared
+sandbox policy. A launch plan that requests network access, read paths, or write
+paths outside the manifest-derived allowlist is rejected before process start.
 
 ### 6.5 Save-state layout
 
@@ -684,7 +697,8 @@ execution, not from the games catalogue itself.
 | 6 | `play/bundle` creation flow |
 | 7 | Shield-aligned verification and SBOM generation |
 | 8 | Catalogue index and launch candidates |
-| 9 | Optional protected asset and entitlement profile |
+| 9 | Additional adapter coverage, including DOSBox-X for PC-98 and Windows-era images |
+| 10 | Optional protected asset and entitlement profile |
 
 The first milestone worth shipping is:
 
@@ -715,6 +729,9 @@ visible while the first runnable slice lands.
 
 ## Changelog
 
+- 2026-04-27: Pass 3 tightened checksum-chain coverage semantics, added
+  DOSBox-X adapter planning, enforced launch-plan sandbox boundaries, and pinned
+  parser/catalogue verification tests.
 - 2026-04-08: Reworked into a cleaner draft with goals, bundle contract,
   runtime architecture, verification model, distribution profiles, delivery
   phases, and open questions.

@@ -262,6 +262,13 @@ func runLaunch(ctx context.Context, c *core.Core, parsed invocation, out io.Writ
 	if err != nil {
 		return err
 	}
+	if plan.Launch != nil {
+		sandboxIssues := sandbox.ValidateLaunch(*plan.Launch)
+		if sandboxIssues.HasIssues() {
+			printIssues(out, sandboxIssues)
+			return sandboxIssues
+		}
+	}
 
 	return plan.Engine.Run(plan.Manifest.Artefact.Path, play.EngineConfig{
 		Core:             c,

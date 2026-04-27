@@ -24,7 +24,9 @@ core play command-and-conquer      # same
 
 ## Status
 
-Bootstrapped repo — spec in `docs/`, implementation pending. Depends on core/app (keystone boot runtime) landing first.
+Iterative implementation in progress. Current slices cover manifest parsing,
+deterministic bundle rendering, Shield verification surfaces, catalogue
+listing, and initial engine adapters.
 
 ## Licence
 

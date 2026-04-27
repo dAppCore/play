@@ -78,6 +78,41 @@ func TestCatalogue_Print_Good(testingT *testing.T) {
 	}
 }
 
+func TestCatalogue_PrintJSON_Good(testingT *testing.T) {
+	testingT.Parallel()
+
+	catalogue := Catalogue{}
+	var buffer bytes.Buffer
+	err := catalogue.PrintJSON(&buffer, []BundleSummary{
+		{
+			Name:     "alpha",
+			Title:    "Alpha",
+			Platform: "synthetic",
+			Engine:   "synthetic",
+			Size:     10,
+			Year:     2026,
+			Verified: true,
+			Path:     "alpha",
+		},
+		{
+			Name:     "beta",
+			Platform: "dos",
+			Engine:   "dosbox",
+			Size:     20,
+			Verified: false,
+			Path:     "beta",
+		},
+	})
+	if err != nil {
+		testingT.Fatalf("PrintJSON returned error: %v", err)
+	}
+
+	expected := "[{\"name\":\"alpha\",\"title\":\"Alpha\",\"platform\":\"synthetic\",\"engine\":\"synthetic\",\"size\":10,\"year\":2026,\"verified\":true,\"path\":\"alpha\"},{\"name\":\"beta\",\"platform\":\"dos\",\"engine\":\"dosbox\",\"size\":20,\"verified\":false,\"path\":\"beta\"}]\n"
+	if buffer.String() != expected {
+		testingT.Fatalf("PrintJSON output changed:\nwant: %s\n got: %s", expected, buffer.String())
+	}
+}
+
 func catalogueBundleFS(testingT *testing.T) fstest.MapFS {
 	testingT.Helper()
 

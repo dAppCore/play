@@ -57,6 +57,22 @@ func TestManifest_LoadManifest_Ugly(testingT *testing.T) {
 	}
 }
 
+func FuzzManifest_LoadManifest(fuzzT *testing.F) {
+	fuzzT.Add(validManifestYAML())
+	fuzzT.Add(validPreservationManifestYAML())
+	fuzzT.Add("name: fuzz\nunknown: value\n")
+	fuzzT.Add("---\nname: first\n---\nname: second\n")
+
+	fuzzT.Fuzz(func(testingT *testing.T, data string) {
+		manifest, err := LoadManifest([]byte(data))
+		if err != nil {
+			return
+		}
+
+		_ = manifest.Validate()
+	})
+}
+
 func validManifestYAML() string {
 	return validManifestYAMLWithArtefactHash(validArtefactSHA256)
 }

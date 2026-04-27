@@ -31,6 +31,8 @@ func inferEngineForPlatform(platform string) string {
 	switch platform {
 	case "dos":
 		return "dosbox"
+	case "pc-98", "windows-3x", "windows-9x":
+		return "dosbox-x"
 	case "sega-genesis", "sega-mega-drive":
 		return "retroarch"
 	case "snes", "super-nintendo":
@@ -52,6 +54,17 @@ func inferProfileForPlatform(platform string, engine string) string {
 	switch engine {
 	case "dosbox":
 		return "dos"
+	case "dosbox-x":
+		switch platform {
+		case "pc-98":
+			return "pc-98"
+		case "windows-3x":
+			return "windows-3x"
+		case "windows-9x":
+			return "windows-9x"
+		default:
+			return "dos"
+		}
 	case "retroarch":
 		switch platform {
 		case "sega-genesis", "sega-mega-drive":
@@ -91,7 +104,7 @@ func inferFrameFilter(requested FrameFilter, engine string) FrameFilter {
 	}
 
 	switch engine {
-	case "dosbox":
+	case "dosbox", "dosbox-x":
 		return FrameFilterNearest
 	case "retroarch":
 		return FrameFilterNearest

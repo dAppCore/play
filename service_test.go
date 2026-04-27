@@ -188,6 +188,31 @@ func TestService_PreparePlayScummVM_Good(testingT *testing.T) {
 	}
 }
 
+func TestService_PreparePlayDOSBoxX_Good(testingT *testing.T) {
+	testingT.Parallel()
+
+	registry := NewRegistry()
+	if err := registry.Register(DOSBoxXEngine{Binary: "dosbox-x"}); err != nil {
+		testingT.Fatalf("Register returned error: %v", err)
+	}
+
+	service := NewService(dosBoxXBundleFS(), registry)
+	plan, err := service.PreparePlay(PlayRequest{BundlePath: "."})
+	if err != nil {
+		testingT.Fatalf("PreparePlay returned error: %v", err)
+	}
+
+	if plan.Launch == nil {
+		testingT.Fatal("PreparePlay expected a launch plan for DOSBox-X")
+	}
+	if plan.Launch.Executable != "dosbox-x" {
+		testingT.Fatalf("unexpected launch executable: %q", plan.Launch.Executable)
+	}
+	if len(plan.Launch.Arguments) != 6 {
+		testingT.Fatalf("unexpected launch arguments: %v", plan.Launch.Arguments)
+	}
+}
+
 func TestService_PreparePlay_Bad(testingT *testing.T) {
 	testingT.Parallel()
 

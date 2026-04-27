@@ -113,7 +113,7 @@ func verifyContent(bundle Bundle) ContentResult {
 		return result
 	}
 
-	checksumIssues, artefactHash := verifyChecksumEntries(bundle.files, entries, bundle.Manifest.Artefact.Path)
+	checksumIssues, artefactHash := verifyChecksumChain(bundle.files, bundle.Manifest, entries)
 	result.Issues = append(result.Issues, checksumIssues...)
 	result.HashChainOK = !checksumIssues.HasIssues()
 

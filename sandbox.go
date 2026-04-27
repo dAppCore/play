@@ -14,6 +14,46 @@ type SandboxPolicy struct {
 	NetworkAllowed bool
 }
 
+// ValidateLaunch reports launch plans that widen the prepared sandbox policy.
+func (policy SandboxPolicy) ValidateLaunch(plan LaunchPlan) ValidationErrors {
+	var issues ValidationErrors
+	if plan.NetworkAllowed && !policy.NetworkAllowed {
+		issues = append(issues, ValidationIssue{
+			Code:    "sandbox/network-denied",
+			Field:   "permissions.network",
+			Message: "launch plan requests network access outside the sandbox policy",
+		})
+	}
+	if plan.Entrypoint != "" && !sandboxPathAllowed(plan.Entrypoint, policy.ReadPaths) {
+		issues = append(issues, ValidationIssue{
+			Code:    "sandbox/read-denied",
+			Field:   "launch.entrypoint",
+			Message: "launch entrypoint is outside the sandbox read allowlist",
+		})
+	}
+
+	for _, readPath := range plan.ReadPaths {
+		if !sandboxPathAllowed(readPath, policy.ReadPaths) {
+			issues = append(issues, ValidationIssue{
+				Code:    "sandbox/read-denied",
+				Field:   readPath,
+				Message: "launch plan requests a read path outside the sandbox policy",
+			})
+		}
+	}
+	for _, writePath := range plan.WritePaths {
+		if !sandboxPathAllowed(writePath, policy.WritePaths) {
+			issues = append(issues, ValidationIssue{
+				Code:    "sandbox/write-denied",
+				Field:   writePath,
+				Message: "launch plan requests a write path outside the sandbox policy",
+			})
+		}
+	}
+
+	return issues
+}
+
 // PrepareSandbox creates the save-state layout for a bundle.
 func PrepareSandbox(bundle Bundle, home string, writer BundleWriter) (SandboxPolicy, error) {
 	if home == "" {
@@ -65,6 +105,37 @@ func PrepareSandbox(bundle Bundle, home string, writer BundleWriter) (SandboxPol
 		WritePaths:     clonePaths(bundle.Manifest.Permissions.FileSystem.Write),
 		NetworkAllowed: bundle.Manifest.Permissions.Network,
 	}, nil
+}
+
+func sandboxPathAllowed(candidate string, allowedPaths []string) bool {
+	if !validBundlePath(candidate) {
+		return false
+	}
+
+	cleanCandidate := normaliseBundlePath(candidate)
+	for _, allowedPath := range allowedPaths {
+		if !validBundlePath(allowedPath) {
+			continue
+		}
+
+		cleanAllowed := normaliseBundlePath(allowedPath)
+		if cleanCandidate == cleanAllowed || hasBundlePathPrefix(cleanCandidate, cleanAllowed) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func hasBundlePathPrefix(candidate string, allowedPath string) bool {
+	if len(candidate) <= len(allowedPath) {
+		return false
+	}
+	if candidate[:len(allowedPath)] != allowedPath {
+		return false
+	}
+
+	return candidate[len(allowedPath)] == '/'
 }
 
 // SandboxError reports STIM sandbox preparation failures.

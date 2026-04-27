@@ -172,6 +172,7 @@ func (service Service) PlanBundle(request BundleRequest) (BundlePlan, Validation
 				},
 			},
 		},
+		Resources: request.ResourceLimits,
 		Save: Save{
 			Path:        savePath,
 			Screenshots: screenshotPath,

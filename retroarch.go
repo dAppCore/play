@@ -99,6 +99,7 @@ func (engine RetroArchEngine) Run(artefact string, config EngineConfig) error {
 		WorkingDirectory: ".",
 		Entrypoint:       artefact,
 		RuntimeConfig:    config.ConfigPath,
+		Resources:        config.Resources,
 		NetworkAllowed:   config.NetworkAllowed,
 	}, config)
 }
@@ -160,6 +161,7 @@ func (engine RetroArchEngine) PlanLaunch(bundle Bundle) (LaunchPlan, error) {
 		RuntimeConfig:    bundle.Manifest.Runtime.Config,
 		ReadPaths:        manifestLaunchReadPaths(bundle.Manifest),
 		WritePaths:       manifestLaunchWritePaths(bundle.Manifest),
+		Resources:        bundle.Manifest.Resources,
 		NetworkAllowed:   bundle.Manifest.Permissions.Network,
 	}, nil
 }

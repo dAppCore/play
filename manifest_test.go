@@ -21,6 +21,9 @@ func TestManifest_LoadManifest_Good(testingT *testing.T) {
 	if manifest.Runtime.Engine != "retroarch" {
 		testingT.Fatalf("unexpected engine: %q", manifest.Runtime.Engine)
 	}
+	if manifest.Resources.CPUPercent != 75 {
+		testingT.Fatalf("unexpected CPU resource limit: %d", manifest.Resources.CPUPercent)
+	}
 
 	preserved, err := LoadManifest([]byte(validPreservationManifestYAML()))
 	if err != nil {
@@ -143,6 +146,9 @@ permissions:
     write:
       - saves/
       - screenshots/
+resources:
+  cpu_percent: 75
+  memory_bytes: 268435456
 save:
   path: saves/
   screenshots: screenshots/

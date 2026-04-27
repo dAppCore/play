@@ -16,22 +16,23 @@ const (
 
 // Manifest describes a runnable STIM bundle.
 type Manifest struct {
-	FormatVersion string       `yaml:"format_version,omitempty"`
-	Name          string       `yaml:"name"`
-	Version       string       `yaml:"version,omitempty"`
-	Title         string       `yaml:"title"`
-	Author        string       `yaml:"author,omitempty"`
-	Year          int          `yaml:"year,omitempty"`
-	Platform      string       `yaml:"platform"`
-	Genre         string       `yaml:"genre,omitempty"`
-	Licence       string       `yaml:"licence"`
-	Artefact      Artefact     `yaml:"artefact"`
-	Runtime       Runtime      `yaml:"runtime"`
-	Preservation  Preservation `yaml:"preservation,omitempty"`
-	Verification  Verification `yaml:"verification"`
-	Permissions   Permissions  `yaml:"permissions"`
-	Save          Save         `yaml:"save,omitempty"`
-	Distribution  Distribution `yaml:"distribution,omitempty"`
+	FormatVersion string         `yaml:"format_version,omitempty"`
+	Name          string         `yaml:"name"`
+	Version       string         `yaml:"version,omitempty"`
+	Title         string         `yaml:"title"`
+	Author        string         `yaml:"author,omitempty"`
+	Year          int            `yaml:"year,omitempty"`
+	Platform      string         `yaml:"platform"`
+	Genre         string         `yaml:"genre,omitempty"`
+	Licence       string         `yaml:"licence"`
+	Artefact      Artefact       `yaml:"artefact"`
+	Runtime       Runtime        `yaml:"runtime"`
+	Preservation  Preservation   `yaml:"preservation,omitempty"`
+	Verification  Verification   `yaml:"verification"`
+	Permissions   Permissions    `yaml:"permissions"`
+	Resources     ResourceLimits `yaml:"resources,omitempty"`
+	Save          Save           `yaml:"save,omitempty"`
+	Distribution  Distribution   `yaml:"distribution,omitempty"`
 }
 
 // Artefact describes the preserved software payload.
@@ -85,6 +86,17 @@ type Permissions struct {
 type FileSystemPermissions struct {
 	Read  []string `yaml:"read,omitempty"`
 	Write []string `yaml:"write,omitempty"`
+}
+
+// ResourceLimits describes CPU and memory ceilings for sandboxed execution.
+type ResourceLimits struct {
+	CPUPercent  int   `yaml:"cpu_percent,omitempty"`
+	MemoryBytes int64 `yaml:"memory_bytes,omitempty"`
+}
+
+// IsZero reports whether no resource ceiling is declared.
+func (limits ResourceLimits) IsZero() bool {
+	return limits.CPUPercent == 0 && limits.MemoryBytes == 0
 }
 
 // Save describes save-state and screenshot directories.

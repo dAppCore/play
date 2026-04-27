@@ -11,6 +11,7 @@ type SandboxPolicy struct {
 	SessionLog     string
 	ReadPaths      []string
 	WritePaths     []string
+	Resources      ResourceLimits
 	NetworkAllowed bool
 }
 
@@ -57,6 +58,7 @@ func (policy SandboxPolicy) ValidateLaunch(plan LaunchPlan) ValidationErrors {
 			})
 		}
 	}
+	issues = append(issues, policy.validateLaunchResources(plan.Resources)...)
 
 	return issues
 }
@@ -110,8 +112,51 @@ func PrepareSandbox(bundle Bundle, home string, writer BundleWriter) (SandboxPol
 		SessionLog:     path.Join(root, "session.log"),
 		ReadPaths:      manifestLaunchReadPaths(bundle.Manifest),
 		WritePaths:     manifestLaunchWritePaths(bundle.Manifest),
+		Resources:      bundle.Manifest.Resources,
 		NetworkAllowed: bundle.Manifest.Permissions.Network,
 	}, nil
+}
+
+func (policy SandboxPolicy) validateLaunchResources(requested ResourceLimits) ValidationErrors {
+	var issues ValidationErrors
+	if resourceLimitDenied(requested.CPUPercent, policy.Resources.CPUPercent) {
+		issues = append(issues, ValidationIssue{
+			Code:    "sandbox/resource-denied",
+			Field:   "resources.cpu_percent",
+			Message: "launch plan requests CPU outside the sandbox resource limits",
+		})
+	}
+	if resourceLimitDenied64(requested.MemoryBytes, policy.Resources.MemoryBytes) {
+		issues = append(issues, ValidationIssue{
+			Code:    "sandbox/resource-denied",
+			Field:   "resources.memory_bytes",
+			Message: "launch plan requests memory outside the sandbox resource limits",
+		})
+	}
+
+	return issues
+}
+
+func resourceLimitDenied(requested int, allowed int) bool {
+	if requested == 0 {
+		return false
+	}
+	if requested < 0 || allowed <= 0 {
+		return true
+	}
+
+	return requested > allowed
+}
+
+func resourceLimitDenied64(requested int64, allowed int64) bool {
+	if requested == 0 {
+		return false
+	}
+	if requested < 0 || allowed <= 0 {
+		return true
+	}
+
+	return requested > allowed
 }
 
 func manifestLaunchReadPaths(manifest Manifest) []string {

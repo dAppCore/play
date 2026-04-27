@@ -28,6 +28,9 @@ func TestSandbox_PrepareSandbox_Good(testingT *testing.T) {
 	if !sandboxPathAllowed("screenshots/capture.png", policy.WritePaths) {
 		testingT.Fatalf("PrepareSandbox write allowlist missing screenshots: %v", policy.WritePaths)
 	}
+	if policy.Resources.CPUPercent != 75 {
+		testingT.Fatalf("PrepareSandbox did not carry CPU resource limit: %+v", policy.Resources)
+	}
 }
 
 func TestSandbox_PrepareSandbox_Bad(testingT *testing.T) {
@@ -72,6 +75,7 @@ func TestSandbox_ValidateLaunch_Good(testingT *testing.T) {
 			"saves/",
 			"screenshots/",
 		},
+		Resources:      ResourceLimits{CPUPercent: 100, MemoryBytes: 536870912},
 		NetworkAllowed: false,
 	}
 	plan := LaunchPlan{
@@ -84,6 +88,7 @@ func TestSandbox_ValidateLaunch_Good(testingT *testing.T) {
 		WritePaths: []string{
 			"saves/",
 		},
+		Resources:      ResourceLimits{CPUPercent: 75, MemoryBytes: 268435456},
 		NetworkAllowed: false,
 	}
 
@@ -104,6 +109,7 @@ func TestSandbox_ValidateLaunch_Bad(testingT *testing.T) {
 		WritePaths: []string{
 			"saves/",
 		},
+		Resources:      ResourceLimits{CPUPercent: 100, MemoryBytes: 536870912},
 		NetworkAllowed: false,
 	}
 	plan := LaunchPlan{
@@ -140,6 +146,7 @@ func TestSandbox_ValidateLaunch_Ugly(testingT *testing.T) {
 		WritePaths: []string{
 			"cache/",
 		},
+		Resources:      ResourceLimits{CPUPercent: 125, MemoryBytes: 1073741824},
 		NetworkAllowed: false,
 	}
 
@@ -149,5 +156,8 @@ func TestSandbox_ValidateLaunch_Ugly(testingT *testing.T) {
 	}
 	if !hasIssueCode(issues, "sandbox/write-denied") {
 		testingT.Fatalf("ValidateLaunch missing sandbox/write-denied issue: %v", issues)
+	}
+	if !hasIssueCode(issues, "sandbox/resource-denied") {
+		testingT.Fatalf("ValidateLaunch missing sandbox/resource-denied issue: %v", issues)
 	}
 }

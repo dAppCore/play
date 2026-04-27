@@ -32,6 +32,14 @@ func TestMain_Parse_Good(testingT *testing.T) {
 			testingT.Fatalf("unexpected root: %q", parsed.Root)
 		}
 	}
+
+	parsed, err := parseInvocation([]string{"bundle", "--name", "sample-bundle", "--rom", "rom.bin", "--cpu-percent", "75", "--memory-bytes", "268435456"})
+	if err != nil {
+		testingT.Fatalf("parseInvocation returned bundle error: %v", err)
+	}
+	if parsed.CPU != 75 || parsed.Memory != 268435456 {
+		testingT.Fatalf("unexpected resource flags: cpu=%d memory=%d", parsed.CPU, parsed.Memory)
+	}
 }
 
 func TestMain_Parse_Bad(testingT *testing.T) {

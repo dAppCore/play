@@ -61,6 +61,7 @@ func (engine VICEEngine) Run(artefact string, config EngineConfig) error {
 		WorkingDirectory: ".",
 		Entrypoint:       artefact,
 		RuntimeConfig:    config.ConfigPath,
+		Resources:        config.Resources,
 		NetworkAllowed:   config.NetworkAllowed,
 	}, config)
 }

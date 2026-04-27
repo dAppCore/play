@@ -159,6 +159,21 @@ func (manifest Manifest) Validate() ValidationErrors {
 		issues = append(issues, validatePathField("permissions.filesystem.write", permissionPath, "manifest/filesystem-write-invalid", "filesystem write path must be a relative bundle path")...)
 	}
 
+	if manifest.Resources.CPUPercent < 0 {
+		issues = append(issues, ValidationIssue{
+			Code:    "manifest/resources-cpu-invalid",
+			Field:   "resources.cpu_percent",
+			Message: "CPU resource limit must not be negative",
+		})
+	}
+	if manifest.Resources.MemoryBytes < 0 {
+		issues = append(issues, ValidationIssue{
+			Code:    "manifest/resources-memory-invalid",
+			Field:   "resources.memory_bytes",
+			Message: "memory resource limit must not be negative",
+		})
+	}
+
 	if manifest.Distribution.Mode == "" && manifest.Distribution.BYOROM {
 		issues = append(issues, ValidationIssue{
 			Code:    "manifest/distribution-mode-required",

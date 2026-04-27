@@ -66,6 +66,7 @@ func (engine SyntheticEngine) PlanLaunch(bundle Bundle) (LaunchPlan, error) {
 		RuntimeConfig:    bundle.Manifest.Runtime.Config,
 		ReadPaths:        manifestLaunchReadPaths(bundle.Manifest),
 		WritePaths:       manifestLaunchWritePaths(bundle.Manifest),
+		Resources:        bundle.Manifest.Resources,
 		NetworkAllowed:   bundle.Manifest.Permissions.Network,
 	}, nil
 }

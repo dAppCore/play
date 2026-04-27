@@ -39,6 +39,8 @@ type invocation struct {
 	Profile   string
 	ROM       string
 	Source    string
+	CPU       int
+	Memory    int64
 	BYOROM    bool
 	JSON      bool
 	Archive   bool
@@ -194,6 +196,8 @@ func parseBundle(args []string) (invocation, error) {
 	profile := flags.String("profile", "", "runtime profile")
 	rom := flags.String("rom", "", "artefact path")
 	source := flags.String("source", "", "artefact source")
+	cpu := flags.Int("cpu-percent", 0, "CPU limit percentage")
+	memory := flags.Int64("memory-bytes", 0, "memory limit in bytes")
 	byorom := flags.Bool("byorom", false, "BYOROM mode")
 	archive := flags.Bool("archive", false, "write deterministic zip archive")
 	if err := flags.Parse(args); err != nil {
@@ -224,6 +228,8 @@ func parseBundle(args []string) (invocation, error) {
 		Profile:   *profile,
 		ROM:       *rom,
 		Source:    *source,
+		CPU:       *cpu,
+		Memory:    *memory,
 		BYOROM:    *byorom,
 		Archive:   *archive,
 	}, nil
@@ -277,6 +283,7 @@ func runLaunch(ctx context.Context, c *core.Core, parsed invocation, out io.Writ
 		ConfigPath:       plan.Manifest.Runtime.Config,
 		Profile:          plan.Manifest.Runtime.Profile,
 		SaveRoot:         sandbox.Root,
+		Resources:        sandbox.Resources,
 		NetworkAllowed:   sandbox.NetworkAllowed,
 		Output:           out,
 	})

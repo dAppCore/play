@@ -224,6 +224,10 @@ permissions:
       - saves/
       - screenshots/
 
+resources:
+  cpu_percent: 75
+  memory_bytes: 268435456
+
 save:
   path: saves/
   screenshots: screenshots/
@@ -251,6 +255,7 @@ distribution:
 | `runtime.filter` | No | Preferred display filter such as `none`, `nearest`, `bilinear`, `scanline`, or `crt` |
 | `verification` | Yes | Integrity chain declaration |
 | `permissions` | Yes | Sandbox and runtime capability declaration |
+| `resources` | No | CPU and memory ceilings for sandboxed execution |
 | `save` | No | Save-state and screenshot layout |
 | `distribution` | No | Delivery-mode hints |
 
@@ -473,10 +478,10 @@ host access beyond platform policy.
 
 Before launch, the resolved engine plan must be checked against the prepared
 sandbox policy. A launch plan that requests network access, read paths, runtime
-config access, or write paths outside the manifest-derived allowlist is rejected
-before process start. Required runtime files such as the artefact, entrypoint,
-and `emulator.yaml` are folded into the effective read allowlist so adapters
-cannot rely on undeclared bundle reads.
+config access, resource ceilings, or write paths outside the manifest-derived
+allowlist is rejected before process start. Required runtime files such as the
+artefact, entrypoint, and `emulator.yaml` are folded into the effective read
+allowlist so adapters cannot rely on undeclared bundle reads.
 
 ### 6.5 Save-state layout
 
@@ -757,6 +762,8 @@ visible while the first runnable slice lands.
 
 ## Changelog
 
+- 2026-04-27: Pass 7 added manifest-declared CPU and memory resource ceilings
+  to sandbox policy and launch-plan validation.
 - 2026-04-27: Pass 5 added explicit STIM manifest format versioning with a
   legacy migration path, and hardened Shield threat scanning against oversized
   ZIP entries, oversized aggregate archive expansion, and deeply nested

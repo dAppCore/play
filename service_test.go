@@ -253,6 +253,10 @@ func TestService_PlanBundle_Good(testingT *testing.T) {
 		Profile:        "genesis",
 		ArtefactPath:   "rom/MegaLoMania.zip",
 		ArtefactSHA256: validArtefactSHA256,
+		ResourceLimits: ResourceLimits{
+			CPUPercent:  75,
+			MemoryBytes: 268435456,
+		},
 	})
 	if issues.HasIssues() {
 		testingT.Fatalf("PlanBundle returned issues: %v", issues)
@@ -269,6 +273,9 @@ func TestService_PlanBundle_Good(testingT *testing.T) {
 	}
 	if plan.Manifest.Runtime.Filter != FrameFilterNearest {
 		testingT.Fatalf("unexpected runtime filter: %q", plan.Manifest.Runtime.Filter)
+	}
+	if plan.Manifest.Resources.MemoryBytes != 268435456 {
+		testingT.Fatalf("unexpected memory resource limit: %d", plan.Manifest.Resources.MemoryBytes)
 	}
 }
 

@@ -46,7 +46,11 @@ func runBundle(parsed invocation, out io.Writer) error {
 		ArtefactSource:   parsed.Source,
 		EngineBinaryPath: engineBinaryPath,
 		EngineBinaryData: engineBinaryData,
-		BYOROM:           parsed.BYOROM,
+		ResourceLimits: play.ResourceLimits{
+			CPUPercent:  parsed.CPU,
+			MemoryBytes: parsed.Memory,
+		},
+		BYOROM: parsed.BYOROM,
 	})
 	if err != nil {
 		return err

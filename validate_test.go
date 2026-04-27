@@ -49,6 +49,8 @@ func TestValidate_Manifest_Ugly(testingT *testing.T) {
 	manifest.Runtime.Config = "/absolute/emulator.yaml"
 	manifest.Runtime.Acceleration = AccelerationMode("warp")
 	manifest.Runtime.Filter = FrameFilter("phosphor-plus")
+	manifest.Resources.CPUPercent = -1
+	manifest.Resources.MemoryBytes = -1
 	manifest.Distribution.Mode = ""
 	manifest.Distribution.BYOROM = true
 
@@ -67,6 +69,12 @@ func TestValidate_Manifest_Ugly(testingT *testing.T) {
 	}
 	if !hasIssueCode(issues, "manifest/artefact-sha256-invalid") {
 		testingT.Fatal("Validate missing manifest/artefact-sha256-invalid issue")
+	}
+	if !hasIssueCode(issues, "manifest/resources-cpu-invalid") {
+		testingT.Fatal("Validate missing manifest/resources-cpu-invalid issue")
+	}
+	if !hasIssueCode(issues, "manifest/resources-memory-invalid") {
+		testingT.Fatal("Validate missing manifest/resources-memory-invalid issue")
 	}
 	if !hasIssueCode(issues, "manifest/distribution-mode-required") {
 		testingT.Fatal("Validate missing manifest/distribution-mode-required issue")

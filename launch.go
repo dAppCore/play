@@ -10,6 +10,7 @@ type LaunchPlan struct {
 	RuntimeConfig    string
 	ReadPaths        []string
 	WritePaths       []string
+	Resources        ResourceLimits
 	NetworkAllowed   bool
 }
 

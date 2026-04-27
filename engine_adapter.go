@@ -65,6 +65,7 @@ func adapterLaunchPlan(engineName string, binary string, bundle Bundle, argument
 		RuntimeConfig:    bundle.Manifest.Runtime.Config,
 		ReadPaths:        manifestLaunchReadPaths(bundle.Manifest),
 		WritePaths:       manifestLaunchWritePaths(bundle.Manifest),
+		Resources:        bundle.Manifest.Resources,
 		NetworkAllowed:   bundle.Manifest.Permissions.Network,
 	}
 }

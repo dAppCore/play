@@ -158,6 +158,7 @@ type BundleRequest struct {
 	EngineBinaryPath   string
 	EngineBinaryData   []byte
 	EngineBinarySHA256 string
+	ResourceLimits     ResourceLimits
 	DistributionMode   string
 	BYOROM             bool
 	Entrypoint         string

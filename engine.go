@@ -24,6 +24,7 @@ type EngineConfig struct {
 	ConfigPath       string
 	Profile          string
 	SaveRoot         string
+	Resources        ResourceLimits
 	NetworkAllowed   bool
 	Output           io.Writer
 }

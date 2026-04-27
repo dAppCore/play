@@ -157,6 +157,13 @@ func (manifest Manifest) Validate() ValidationErrors {
 	}
 	for _, permissionPath := range manifest.Permissions.FileSystem.Write {
 		issues = append(issues, validatePathField("permissions.filesystem.write", permissionPath, "manifest/filesystem-write-invalid", "filesystem write path must be a relative bundle path")...)
+		if validBundlePath(permissionPath) && !manifestWritePathAllowed(manifest, permissionPath) {
+			issues = append(issues, ValidationIssue{
+				Code:    "manifest/filesystem-write-denied",
+				Field:   "permissions.filesystem.write",
+				Message: "filesystem write path must stay within the save-state or screenshot directory",
+			})
+		}
 	}
 
 	if manifest.Resources.CPUPercent < 0 {

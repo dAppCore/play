@@ -49,6 +49,7 @@ func TestValidate_Manifest_Ugly(testingT *testing.T) {
 	manifest.Runtime.Config = "/absolute/emulator.yaml"
 	manifest.Runtime.Acceleration = AccelerationMode("warp")
 	manifest.Runtime.Filter = FrameFilter("phosphor-plus")
+	manifest.Permissions.FileSystem.Write = []string{"rom/"}
 	manifest.Resources.CPUPercent = -1
 	manifest.Resources.MemoryBytes = -1
 	manifest.Distribution.Mode = ""
@@ -69,6 +70,9 @@ func TestValidate_Manifest_Ugly(testingT *testing.T) {
 	}
 	if !hasIssueCode(issues, "manifest/artefact-sha256-invalid") {
 		testingT.Fatal("Validate missing manifest/artefact-sha256-invalid issue")
+	}
+	if !hasIssueCode(issues, "manifest/filesystem-write-denied") {
+		testingT.Fatal("Validate missing manifest/filesystem-write-denied issue")
 	}
 	if !hasIssueCode(issues, "manifest/resources-cpu-invalid") {
 		testingT.Fatal("Validate missing manifest/resources-cpu-invalid issue")

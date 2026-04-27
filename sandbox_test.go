@@ -161,3 +161,28 @@ func TestSandbox_ValidateLaunch_Ugly(testingT *testing.T) {
 		testingT.Fatalf("ValidateLaunch missing sandbox/resource-denied issue: %v", issues)
 	}
 }
+
+func TestSandbox_WritePolicy_Ugly(testingT *testing.T) {
+	testingT.Parallel()
+
+	manifest, err := LoadManifest([]byte(validManifestYAML()))
+	if err != nil {
+		testingT.Fatalf("LoadManifest returned error: %v", err)
+	}
+	manifest.Permissions.FileSystem.Write = []string{
+		"saves/session-a/",
+		"rom/",
+		"screenshots/",
+	}
+
+	paths := manifestLaunchWritePaths(manifest)
+	if sandboxPathAllowed("rom/rewrite.bin", paths) {
+		testingT.Fatalf("write policy allowed bundle artefact writes: %v", paths)
+	}
+	if !sandboxPathAllowed("saves/session-a/state.bin", paths) {
+		testingT.Fatalf("write policy removed save-state writes: %v", paths)
+	}
+	if !sandboxPathAllowed("screenshots/capture.png", paths) {
+		testingT.Fatalf("write policy removed screenshot writes: %v", paths)
+	}
+}

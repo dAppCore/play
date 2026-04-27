@@ -483,6 +483,10 @@ allowlist is rejected before process start. Required runtime files such as the
 artefact, entrypoint, and `emulator.yaml` are folded into the effective read
 allowlist so adapters cannot rely on undeclared bundle reads.
 
+Filesystem write declarations are clamped to the save-state and screenshot
+roots. The manifest may narrow writes to a child path of those roots, but it
+must not widen host write access by declaring arbitrary bundle directories.
+
 ### 6.5 Save-state layout
 
 ```text
@@ -762,6 +766,8 @@ visible while the first runnable slice lands.
 
 ## Changelog
 
+- 2026-04-27: Pass 8 clamped sandbox write permissions to save-state and
+  screenshot roots so manifests can narrow, but not expand, host write access.
 - 2026-04-27: Pass 7 added manifest-declared CPU and memory resource ceilings
   to sandbox policy and launch-plan validation.
 - 2026-04-27: Pass 5 added explicit STIM manifest format versioning with a

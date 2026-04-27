@@ -169,11 +169,62 @@ func manifestLaunchReadPaths(manifest Manifest) []string {
 }
 
 func manifestLaunchWritePaths(manifest Manifest) []string {
-	paths := clonePaths(manifest.Permissions.FileSystem.Write)
-	paths = appendUniqueBundlePath(paths, manifest.Save.Path)
-	paths = appendUniqueBundlePath(paths, manifest.Save.Screenshots)
+	if len(manifest.Permissions.FileSystem.Write) == 0 {
+		return defaultManifestWritePaths(manifest)
+	}
+
+	var paths []string
+	for _, candidate := range manifest.Permissions.FileSystem.Write {
+		if manifestWritePathAllowed(manifest, candidate) {
+			paths = appendUniqueBundlePath(paths, candidate)
+		}
+	}
 
 	return paths
+}
+
+func defaultManifestWritePaths(manifest Manifest) []string {
+	var paths []string
+	paths = appendUniqueBundlePath(paths, manifestSavePath(manifest))
+	paths = appendUniqueBundlePath(paths, manifestScreenshotPath(manifest))
+
+	return paths
+}
+
+func manifestWritePathAllowed(manifest Manifest, candidate string) bool {
+	if !validBundlePath(candidate) {
+		return false
+	}
+
+	cleanCandidate := normaliseBundlePath(candidate)
+	for _, root := range []string{manifestSavePath(manifest), manifestScreenshotPath(manifest)} {
+		if !validBundlePath(root) {
+			continue
+		}
+
+		cleanRoot := normaliseBundlePath(root)
+		if cleanCandidate == cleanRoot || hasBundlePathPrefix(cleanCandidate, cleanRoot) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func manifestSavePath(manifest Manifest) string {
+	if manifest.Save.Path != "" {
+		return manifest.Save.Path
+	}
+
+	return "saves/"
+}
+
+func manifestScreenshotPath(manifest Manifest) string {
+	if manifest.Save.Screenshots != "" {
+		return manifest.Save.Screenshots
+	}
+
+	return "screenshots/"
 }
 
 func appendUniqueBundlePath(paths []string, value string) []string {

@@ -128,13 +128,14 @@ func (service Service) PlanBundle(request BundleRequest) (BundlePlan, Validation
 	distributionMode := defaultString(request.DistributionMode, "catalogue")
 
 	manifest := Manifest{
-		Name:     request.Name,
-		Title:    request.Title,
-		Author:   request.Author,
-		Year:     request.Year,
-		Platform: request.Platform,
-		Genre:    request.Genre,
-		Licence:  request.Licence,
+		FormatVersion: CurrentManifestFormatVersion,
+		Name:          request.Name,
+		Title:         request.Title,
+		Author:        request.Author,
+		Year:          request.Year,
+		Platform:      request.Platform,
+		Genre:         request.Genre,
+		Licence:       request.Licence,
 		Artefact: Artefact{
 			Path:      request.ArtefactPath,
 			SHA256:    request.ArtefactSHA256,

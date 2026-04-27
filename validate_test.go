@@ -28,6 +28,9 @@ func TestValidate_Manifest_Bad(testingT *testing.T) {
 	if !hasIssueCode(issues, "manifest/name-required") {
 		testingT.Fatal("Validate missing manifest/name-required issue")
 	}
+	if !hasIssueCode(issues, "manifest/format-version-required") {
+		testingT.Fatal("Validate missing manifest/format-version-required issue")
+	}
 	if !hasIssueCode(issues, "manifest/runtime-engine-required") {
 		testingT.Fatal("Validate missing manifest/runtime-engine-required issue")
 	}

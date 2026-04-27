@@ -185,6 +185,7 @@ contains, what engine it expects, what permissions it needs, and how integrity
 is proven.
 
 ```yaml
+format_version: stim-v1
 name: mega-lo-mania
 title: "Mega lo Mania"
 author: "Sensible Software"
@@ -236,6 +237,7 @@ distribution:
 
 | Field | Required | Meaning |
 |------|----------|---------|
+| `format_version` | Yes | STIM manifest schema version |
 | `name` | Yes | Stable machine identifier |
 | `title` | Yes | Human-readable title |
 | `author` | No | Original developer or studio |
@@ -251,6 +253,11 @@ distribution:
 | `permissions` | Yes | Sandbox and runtime capability declaration |
 | `save` | No | Save-state and screenshot layout |
 | `distribution` | No | Delivery-mode hints |
+
+The current supported manifest format is `stim-v1`. Manifests without
+`format_version` are treated as legacy RFC-era bundles and are normalised to
+`stim-v1` at load time. Unknown future format versions must be rejected rather
+than silently interpreted under the wrong schema.
 
 ### 4.5 `emulator.yaml`
 
@@ -520,6 +527,9 @@ Every STIM bundle is also a verification subject.
 - every declared file hash matches
 - the SBOM file exists and matches declared location
 - the engine named by the manifest is known or marked unresolved
+- ZIP artefacts reject unsafe paths, executable/script payloads, excessive
+  expansion, oversized entries, oversized aggregate expansion, and excessive
+  path nesting before launch
 
 ### 7.2 Deterministic bundle expectations
 
@@ -542,6 +552,8 @@ Verification failures should be categorised clearly:
 - `manifest/invalid`
 - `hash/mismatch`
 - `sbom/missing`
+- `threat/entry-size`
+- `threat/path-depth`
 - `engine/unavailable`
 - `sandbox/policy-denied`
 
@@ -745,6 +757,10 @@ visible while the first runnable slice lands.
 
 ## Changelog
 
+- 2026-04-27: Pass 5 added explicit STIM manifest format versioning with a
+  legacy migration path, and hardened Shield threat scanning against oversized
+  ZIP entries, oversized aggregate archive expansion, and deeply nested
+  artefact paths.
 - 2026-04-27: Pass 4 added MAME, VICE, FUSE, and standalone Snes9x adapter
   scaffolds, tightened canonical bundle path handling, and expanded sandbox
   read/write allowlist enforcement around runtime config access.

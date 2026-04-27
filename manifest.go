@@ -7,23 +7,31 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+const (
+	// CurrentManifestFormatVersion is the current STIM manifest schema version.
+	CurrentManifestFormatVersion = "stim-v1"
+
+	legacyManifestFormatVersion = "legacy"
+)
+
 // Manifest describes a runnable STIM bundle.
 type Manifest struct {
-	Name         string       `yaml:"name"`
-	Version      string       `yaml:"version,omitempty"`
-	Title        string       `yaml:"title"`
-	Author       string       `yaml:"author,omitempty"`
-	Year         int          `yaml:"year,omitempty"`
-	Platform     string       `yaml:"platform"`
-	Genre        string       `yaml:"genre,omitempty"`
-	Licence      string       `yaml:"licence"`
-	Artefact     Artefact     `yaml:"artefact"`
-	Runtime      Runtime      `yaml:"runtime"`
-	Preservation Preservation `yaml:"preservation,omitempty"`
-	Verification Verification `yaml:"verification"`
-	Permissions  Permissions  `yaml:"permissions"`
-	Save         Save         `yaml:"save,omitempty"`
-	Distribution Distribution `yaml:"distribution,omitempty"`
+	FormatVersion string       `yaml:"format_version,omitempty"`
+	Name          string       `yaml:"name"`
+	Version       string       `yaml:"version,omitempty"`
+	Title         string       `yaml:"title"`
+	Author        string       `yaml:"author,omitempty"`
+	Year          int          `yaml:"year,omitempty"`
+	Platform      string       `yaml:"platform"`
+	Genre         string       `yaml:"genre,omitempty"`
+	Licence       string       `yaml:"licence"`
+	Artefact      Artefact     `yaml:"artefact"`
+	Runtime       Runtime      `yaml:"runtime"`
+	Preservation  Preservation `yaml:"preservation,omitempty"`
+	Verification  Verification `yaml:"verification"`
+	Permissions   Permissions  `yaml:"permissions"`
+	Save          Save         `yaml:"save,omitempty"`
+	Distribution  Distribution `yaml:"distribution,omitempty"`
 }
 
 // Artefact describes the preserved software payload.
@@ -100,10 +108,14 @@ func LoadManifest(data []byte) (Manifest, error) {
 	if err := decoder.Decode(&manifest); err != nil {
 		return Manifest{}, err
 	}
-	manifest = normaliseManifest(manifest)
+	var err error
+	manifest, _, err = MigrateManifest(manifest)
+	if err != nil {
+		return Manifest{}, err
+	}
 
 	var trailing yaml.Node
-	err := decoder.Decode(&trailing)
+	err = decoder.Decode(&trailing)
 	if err == io.EOF {
 		return manifest, nil
 	}
@@ -117,18 +129,71 @@ func LoadManifest(data []byte) (Manifest, error) {
 	}
 }
 
-func normaliseManifest(manifest Manifest) Manifest {
+// ManifestMigration describes compatibility changes applied while loading a manifest.
+type ManifestMigration struct {
+	From    string
+	To      string
+	Applied []string
+}
+
+// Migrated reports whether any compatibility changes were applied.
+func (migration ManifestMigration) Migrated() bool {
+	return len(migration.Applied) > 0
+}
+
+// MigrateManifest upgrades a decoded manifest to the current STIM format version.
+func MigrateManifest(manifest Manifest) (Manifest, ManifestMigration, error) {
+	from := manifest.FormatVersion
+	if from == "" {
+		from = legacyManifestFormatVersion
+	}
+
+	migration := ManifestMigration{
+		From: from,
+		To:   CurrentManifestFormatVersion,
+	}
+
+	switch from {
+	case legacyManifestFormatVersion:
+		manifest.FormatVersion = CurrentManifestFormatVersion
+		migration.Applied = append(migration.Applied, "manifest/legacy-format-version")
+	case CurrentManifestFormatVersion:
+		manifest.FormatVersion = CurrentManifestFormatVersion
+	default:
+		return Manifest{}, migration, ParseError{
+			Kind:    "manifest/format-version-unsupported",
+			Message: "unsupported STIM manifest format version",
+		}
+	}
+
+	manifest = normaliseManifest(manifest, &migration)
+
+	return manifest, migration, nil
+}
+
+func normaliseManifest(manifest Manifest, migration *ManifestMigration) Manifest {
 	if manifest.Preservation.Chain == "" && manifest.Verification.Chain != "" {
 		manifest.Preservation.Chain = manifest.Verification.Chain
+		recordManifestMigration(migration, "manifest/preservation-chain")
 	}
 	if manifest.Verification.Chain == "" && manifest.Preservation.Chain != "" {
 		manifest.Verification.Chain = manifest.Preservation.Chain
+		recordManifestMigration(migration, "manifest/verification-chain")
 	}
 	if manifest.Verification.SBOM == "" && manifest.Preservation.Chain != "" {
 		manifest.Verification.SBOM = "sbom.json"
+		recordManifestMigration(migration, "manifest/default-sbom")
 	}
 
 	return manifest
+}
+
+func recordManifestMigration(migration *ManifestMigration, change string) {
+	if migration == nil {
+		return
+	}
+
+	migration.Applied = append(migration.Applied, change)
 }
 
 // ParseError reports manifest parsing problems.

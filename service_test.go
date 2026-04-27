@@ -261,6 +261,9 @@ func TestService_PlanBundle_Good(testingT *testing.T) {
 	if plan.Manifest.Runtime.Config != "emulator.yaml" {
 		testingT.Fatalf("unexpected runtime config: %q", plan.Manifest.Runtime.Config)
 	}
+	if plan.Manifest.FormatVersion != CurrentManifestFormatVersion {
+		testingT.Fatalf("unexpected format version: %q", plan.Manifest.FormatVersion)
+	}
 	if plan.Manifest.Runtime.Acceleration != AccelerationAuto {
 		testingT.Fatalf("unexpected runtime acceleration: %q", plan.Manifest.Runtime.Acceleration)
 	}

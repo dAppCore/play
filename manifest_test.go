@@ -15,6 +15,9 @@ func TestManifest_LoadManifest_Good(testingT *testing.T) {
 	if manifest.Name != "mega-lo-mania" {
 		testingT.Fatalf("unexpected manifest name: %q", manifest.Name)
 	}
+	if manifest.FormatVersion != CurrentManifestFormatVersion {
+		testingT.Fatalf("unexpected manifest format version: %q", manifest.FormatVersion)
+	}
 	if manifest.Runtime.Engine != "retroarch" {
 		testingT.Fatalf("unexpected engine: %q", manifest.Runtime.Engine)
 	}
@@ -29,6 +32,22 @@ func TestManifest_LoadManifest_Good(testingT *testing.T) {
 	if preserved.Verification.SBOM != "sbom.json" {
 		testingT.Fatalf("unexpected default SBOM path: %q", preserved.Verification.SBOM)
 	}
+
+	migrated, migration, err := MigrateManifest(Manifest{
+		Preservation: Preservation{Chain: "checksums.sha256"},
+	})
+	if err != nil {
+		testingT.Fatalf("MigrateManifest returned error: %v", err)
+	}
+	if !migration.Migrated() {
+		testingT.Fatal("MigrateManifest expected a legacy migration report")
+	}
+	if migrated.FormatVersion != CurrentManifestFormatVersion {
+		testingT.Fatalf("unexpected migrated format version: %q", migrated.FormatVersion)
+	}
+	if migrated.Verification.Chain != "checksums.sha256" {
+		testingT.Fatalf("unexpected migrated verification chain: %q", migrated.Verification.Chain)
+	}
 }
 
 func TestManifest_LoadManifest_Bad(testingT *testing.T) {
@@ -37,6 +56,18 @@ func TestManifest_LoadManifest_Bad(testingT *testing.T) {
 	_, err := LoadManifest([]byte("name: mega-lo-mania\nunknown: value\n"))
 	if err == nil {
 		testingT.Fatal("LoadManifest expected an error for unknown fields")
+	}
+
+	_, err = LoadManifest([]byte("format_version: stim-v99\nname: future\n"))
+	if err == nil {
+		testingT.Fatal("LoadManifest expected an error for unsupported manifest format version")
+	}
+	parseError, ok := err.(ParseError)
+	if !ok {
+		testingT.Fatalf("LoadManifest returned %T, want ParseError", err)
+	}
+	if parseError.Kind != "manifest/format-version-unsupported" {
+		testingT.Fatalf("unexpected parse error kind: %q", parseError.Kind)
 	}
 }
 
@@ -61,6 +92,7 @@ func FuzzManifest_LoadManifest(fuzzT *testing.F) {
 	fuzzT.Add(validManifestYAML())
 	fuzzT.Add(validPreservationManifestYAML())
 	fuzzT.Add("name: fuzz\nunknown: value\n")
+	fuzzT.Add("format_version: stim-v99\nname: future\n")
 	fuzzT.Add("---\nname: first\n---\nname: second\n")
 
 	fuzzT.Fuzz(func(testingT *testing.T, data string) {

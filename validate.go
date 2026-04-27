@@ -53,6 +53,19 @@ func (issues ValidationErrors) HasIssues() bool {
 func (manifest Manifest) Validate() ValidationErrors {
 	var issues ValidationErrors
 
+	if manifest.FormatVersion == "" {
+		issues = append(issues, ValidationIssue{
+			Code:    "manifest/format-version-required",
+			Field:   "format_version",
+			Message: "STIM manifest format version is required",
+		})
+	} else if manifest.FormatVersion != CurrentManifestFormatVersion {
+		issues = append(issues, ValidationIssue{
+			Code:    "manifest/format-version-unsupported",
+			Field:   "format_version",
+			Message: "STIM manifest format version is not supported",
+		})
+	}
 	if manifest.Name == "" {
 		issues = append(issues, ValidationIssue{
 			Code:    "manifest/name-required",

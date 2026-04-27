@@ -78,11 +78,76 @@ func TestThreat_VerifyThreat_Ugly(testingT *testing.T) {
 	}
 }
 
+func TestThreat_MaliciousZIPMatrix_Ugly(testingT *testing.T) {
+	testingT.Parallel()
+
+	cases := []struct {
+		Name       string
+		Artefact   []byte
+		WantedCode string
+	}{
+		{
+			Name: "traversal-path",
+			Artefact: testZIP(testZIPEntry{
+				Path: "../escape.bin",
+				Data: []byte("escape"),
+				Mode: 0644,
+			}),
+			WantedCode: "threat/path-invalid",
+		},
+		{
+			Name: "absolute-path",
+			Artefact: testZIP(testZIPEntry{
+				Path: "/absolute.bin",
+				Data: []byte("absolute"),
+				Mode: 0644,
+			}),
+			WantedCode: "threat/path-invalid",
+		},
+		{
+			Name: "normalised-path",
+			Artefact: testZIP(testZIPEntry{
+				Path: "game/../escape.bin",
+				Data: []byte("escape"),
+				Mode: 0644,
+			}),
+			WantedCode: "threat/path-invalid",
+		},
+		{
+			Name: "windows-path",
+			Artefact: testZIP(testZIPEntry{
+				Path: "game\\payload.bin",
+				Data: []byte("payload"),
+				Mode: 0644,
+			}),
+			WantedCode: "threat/path-invalid",
+		},
+		{
+			Name:       "aggregate-expansion",
+			Artefact:   testAggregateZIP(),
+			WantedCode: "threat/archive-size",
+		},
+	}
+
+	for _, entry := range cases {
+		entry := entry
+		testingT.Run(entry.Name, func(testingT *testing.T) {
+			testingT.Parallel()
+
+			result := verifyThreat(threatBundle(testingT, entry.Artefact))
+			if !hasIssueCode(result.Issues, entry.WantedCode) {
+				testingT.Fatalf("verifyThreat missing %s issue: %v", entry.WantedCode, result.Issues)
+			}
+		})
+	}
+}
+
 type testZIPEntry struct {
 	Path               string
 	Data               []byte
 	Mode               fs.FileMode
 	UncompressedSize64 uint64
+	CompressedSize64   uint64
 }
 
 func testZIP(entry testZIPEntry) []byte {
@@ -109,27 +174,49 @@ func testZIP(entry testZIPEntry) []byte {
 }
 
 func testRawZIP(entry testZIPEntry) []byte {
+	return testRawZIPArchive(entry)
+}
+
+func testRawZIPArchive(entries ...testZIPEntry) []byte {
 	var buffer bytes.Buffer
 	writer := zip.NewWriter(&buffer)
-	header := &zip.FileHeader{
-		Name:               entry.Path,
-		Method:             zip.Store,
-		UncompressedSize64: entry.UncompressedSize64,
-	}
-	header.SetMode(entry.Mode)
 
-	fileWriter, err := writer.CreateRaw(header)
-	if err != nil {
-		panic(err)
-	}
-	if _, err := fileWriter.Write(nil); err != nil {
-		panic(err)
+	for _, entry := range entries {
+		header := &zip.FileHeader{
+			Name:               entry.Path,
+			Method:             zip.Store,
+			CompressedSize64:   entry.CompressedSize64,
+			UncompressedSize64: entry.UncompressedSize64,
+		}
+		header.SetMode(entry.Mode)
+
+		fileWriter, err := writer.CreateRaw(header)
+		if err != nil {
+			panic(err)
+		}
+		if _, err := fileWriter.Write(entry.Data); err != nil {
+			panic(err)
+		}
 	}
 	if err := writer.Close(); err != nil {
 		panic(err)
 	}
 
 	return buffer.Bytes()
+}
+
+func testAggregateZIP() []byte {
+	entries := make([]testZIPEntry, 0, 9)
+	for index := 0; index < 9; index++ {
+		entries = append(entries, testZIPEntry{
+			Path:               "game/chunk.bin",
+			Mode:               0644,
+			CompressedSize64:   maxZIPEntryUncompressedBytes,
+			UncompressedSize64: maxZIPEntryUncompressedBytes,
+		})
+	}
+
+	return testRawZIPArchive(entries...)
 }
 
 func nestedArchivePath(depth int) string {

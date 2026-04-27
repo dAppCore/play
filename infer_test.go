@@ -136,3 +136,71 @@ func TestInfer_DOSBoxXDefaults_Good(testingT *testing.T) {
 		testingT.Fatalf("unexpected inferred filter: %q", plan.Manifest.Runtime.Filter)
 	}
 }
+
+func TestInfer_AdditionalAdapterDefaults_Good(testingT *testing.T) {
+	testingT.Parallel()
+
+	service := NewService(nil, nil)
+	plan, issues := service.PlanBundle(BundleRequest{
+		Name:           "c64-sample",
+		Title:          "C64 Sample",
+		Platform:       "commodore-64",
+		Licence:        "freeware",
+		ArtefactPath:   "rom/game.d64",
+		ArtefactSHA256: validArtefactSHA256,
+	})
+	if issues.HasIssues() {
+		testingT.Fatalf("PlanBundle returned issues: %v", issues)
+	}
+
+	if plan.Manifest.Runtime.Engine != "vice" {
+		testingT.Fatalf("unexpected inferred engine: %q", plan.Manifest.Runtime.Engine)
+	}
+	if plan.Manifest.Runtime.Profile != "c64" {
+		testingT.Fatalf("unexpected inferred profile: %q", plan.Manifest.Runtime.Profile)
+	}
+	if plan.Manifest.Runtime.Filter != FrameFilterNearest {
+		testingT.Fatalf("unexpected inferred filter: %q", plan.Manifest.Runtime.Filter)
+	}
+}
+
+func TestInfer_MAMEProfile_Bad(testingT *testing.T) {
+	testingT.Parallel()
+
+	service := NewService(nil, nil)
+	_, issues := service.PlanBundle(BundleRequest{
+		Name:           "arcade-sample",
+		Title:          "Arcade Sample",
+		Platform:       "arcade",
+		Licence:        "freeware",
+		ArtefactPath:   "rom/puckman.zip",
+		ArtefactSHA256: validArtefactSHA256,
+	})
+	if !hasIssueCode(issues, "manifest/runtime-profile-required") {
+		testingT.Fatalf("PlanBundle missing manifest/runtime-profile-required issue: %v", issues)
+	}
+}
+
+func TestInfer_FUSEDefaults_Ugly(testingT *testing.T) {
+	testingT.Parallel()
+
+	service := NewService(nil, nil)
+	plan, issues := service.PlanBundle(BundleRequest{
+		Name:           "spectrum-sample",
+		Title:          "Spectrum Sample",
+		Platform:       "zx-spectrum-128k",
+		Licence:        "freeware",
+		ArtefactPath:   "rom/game.tap",
+		ArtefactSHA256: validArtefactSHA256,
+	})
+	if issues.HasIssues() {
+		testingT.Fatalf("PlanBundle returned issues: %v", issues)
+	}
+
+	if plan.Manifest.Runtime.Engine != "fuse" {
+		testingT.Fatalf("unexpected inferred engine: %q", plan.Manifest.Runtime.Engine)
+	}
+	if plan.Manifest.Runtime.Profile != "128k" {
+		testingT.Fatalf("unexpected inferred profile: %q", plan.Manifest.Runtime.Profile)
+	}
+}

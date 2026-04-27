@@ -101,15 +101,15 @@ type validationTarget struct {
 }
 
 func cleanBundlePath(bundlePath string) (string, error) {
-	if bundlePath == "" || bundlePath == "." {
+	if bundlePath == "" || bundlePath == "." || bundlePath == "./" {
 		return ".", nil
+	}
+	if len(bundlePath) > 2 && bundlePath[0] == '.' && bundlePath[1] == '/' {
+		bundlePath = bundlePath[2:]
 	}
 
-	cleanPath := path.Clean(bundlePath)
-	if cleanPath == "." {
-		return ".", nil
-	}
-	if !fs.ValidPath(cleanPath) {
+	cleanPath, ok := canonicalBundlePath(bundlePath)
+	if !ok {
 		return "", PathError{
 			Kind:    "bundle/path-invalid",
 			Path:    bundlePath,

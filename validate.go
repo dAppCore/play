@@ -186,16 +186,43 @@ func validatePathField(field string, value string, code string, message string) 
 }
 
 func validBundlePath(value string) bool {
+	_, ok := canonicalBundlePath(value)
+	return ok
+}
+
+func canonicalBundlePath(value string) (string, bool) {
 	if value == "" {
-		return false
+		return "", false
+	}
+	if value[0] == '/' || containsByte(value, '\\') {
+		return "", false
 	}
 
 	cleanPath := path.Clean(value)
 	if cleanPath == "." {
-		return false
+		return "", false
+	}
+	if !fs.ValidPath(cleanPath) {
+		return "", false
+	}
+	if value == cleanPath {
+		return cleanPath, true
+	}
+	if value == cleanPath+"/" {
+		return cleanPath, true
 	}
 
-	return fs.ValidPath(cleanPath)
+	return "", false
+}
+
+func containsByte(value string, needle byte) bool {
+	for index := 0; index < len(value); index++ {
+		if value[index] == needle {
+			return true
+		}
+	}
+
+	return false
 }
 
 func validSHA256(value string) bool {
@@ -209,7 +236,7 @@ func validSHA256(value string) bool {
 
 func engineRequiresProfile(engine string) bool {
 	switch engine {
-	case "retroarch", "scummvm":
+	case "mame", "retroarch", "scummvm":
 		return true
 	default:
 		return false

@@ -31,6 +31,13 @@ func (policy SandboxPolicy) ValidateLaunch(plan LaunchPlan) ValidationErrors {
 			Message: "launch entrypoint is outside the sandbox read allowlist",
 		})
 	}
+	if plan.RuntimeConfig != "" && !sandboxPathAllowed(plan.RuntimeConfig, policy.ReadPaths) {
+		issues = append(issues, ValidationIssue{
+			Code:    "sandbox/read-denied",
+			Field:   "launch.runtime_config",
+			Message: "launch runtime config is outside the sandbox read allowlist",
+		})
+	}
 
 	for _, readPath := range plan.ReadPaths {
 		if !sandboxPathAllowed(readPath, policy.ReadPaths) {
@@ -101,10 +108,45 @@ func PrepareSandbox(bundle Bundle, home string, writer BundleWriter) (SandboxPol
 		Saves:          saves,
 		Screenshots:    screenshots,
 		SessionLog:     path.Join(root, "session.log"),
-		ReadPaths:      clonePaths(bundle.Manifest.Permissions.FileSystem.Read),
-		WritePaths:     clonePaths(bundle.Manifest.Permissions.FileSystem.Write),
+		ReadPaths:      manifestLaunchReadPaths(bundle.Manifest),
+		WritePaths:     manifestLaunchWritePaths(bundle.Manifest),
 		NetworkAllowed: bundle.Manifest.Permissions.Network,
 	}, nil
+}
+
+func manifestLaunchReadPaths(manifest Manifest) []string {
+	paths := clonePaths(manifest.Permissions.FileSystem.Read)
+	paths = appendUniqueBundlePath(paths, manifest.Artefact.Path)
+	paths = appendUniqueBundlePath(paths, manifest.Runtime.Config)
+	paths = appendUniqueBundlePath(paths, manifest.Runtime.Entrypoint)
+
+	return paths
+}
+
+func manifestLaunchWritePaths(manifest Manifest) []string {
+	paths := clonePaths(manifest.Permissions.FileSystem.Write)
+	paths = appendUniqueBundlePath(paths, manifest.Save.Path)
+	paths = appendUniqueBundlePath(paths, manifest.Save.Screenshots)
+
+	return paths
+}
+
+func appendUniqueBundlePath(paths []string, value string) []string {
+	if !validBundlePath(value) {
+		return paths
+	}
+
+	cleanValue := normaliseBundlePath(value)
+	for _, candidate := range paths {
+		if !validBundlePath(candidate) {
+			continue
+		}
+		if normaliseBundlePath(candidate) == cleanValue {
+			return paths
+		}
+	}
+
+	return append(paths, cleanValue)
 }
 
 func sandboxPathAllowed(candidate string, allowedPaths []string) bool {

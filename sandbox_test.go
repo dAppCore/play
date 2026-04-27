@@ -22,6 +22,12 @@ func TestSandbox_PrepareSandbox_Good(testingT *testing.T) {
 	if !writer.hasDirectory("/home/core/.core/play/mega-lo-mania/saves") {
 		testingT.Fatal("PrepareSandbox did not create save directory")
 	}
+	if !sandboxPathAllowed("emulator.yaml", policy.ReadPaths) {
+		testingT.Fatalf("PrepareSandbox read allowlist missing runtime config: %v", policy.ReadPaths)
+	}
+	if !sandboxPathAllowed("screenshots/capture.png", policy.WritePaths) {
+		testingT.Fatalf("PrepareSandbox write allowlist missing screenshots: %v", policy.WritePaths)
+	}
 }
 
 func TestSandbox_PrepareSandbox_Bad(testingT *testing.T) {
@@ -60,6 +66,7 @@ func TestSandbox_ValidateLaunch_Good(testingT *testing.T) {
 	policy := SandboxPolicy{
 		ReadPaths: []string{
 			"rom/",
+			"emulator.yaml",
 		},
 		WritePaths: []string{
 			"saves/",
@@ -68,9 +75,11 @@ func TestSandbox_ValidateLaunch_Good(testingT *testing.T) {
 		NetworkAllowed: false,
 	}
 	plan := LaunchPlan{
-		Entrypoint: "rom/rom.bin",
+		Entrypoint:    "rom/rom.bin",
+		RuntimeConfig: "emulator.yaml",
 		ReadPaths: []string{
 			"rom/",
+			"emulator.yaml",
 		},
 		WritePaths: []string{
 			"saves/",
@@ -90,6 +99,7 @@ func TestSandbox_ValidateLaunch_Bad(testingT *testing.T) {
 	policy := SandboxPolicy{
 		ReadPaths: []string{
 			"rom/",
+			"emulator.yaml",
 		},
 		WritePaths: []string{
 			"saves/",
@@ -122,7 +132,8 @@ func TestSandbox_ValidateLaunch_Ugly(testingT *testing.T) {
 		NetworkAllowed: false,
 	}
 	plan := LaunchPlan{
-		Entrypoint: "payload/run.exe",
+		Entrypoint:    "payload/run.exe",
+		RuntimeConfig: "payload/emulator.yaml",
 		ReadPaths: []string{
 			"payload/",
 		},

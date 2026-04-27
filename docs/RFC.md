@@ -424,6 +424,19 @@ func init() {
 }
 ```
 
+Initial adapter coverage:
+
+| Engine | Platforms | Notes |
+|--------|-----------|-------|
+| `dosbox` | DOS | Simple DOS artefact launch |
+| `dosbox-x` | DOS, PC-98, Windows 3.x, Windows 9x | Machine/profile-aware boot planning |
+| `retroarch` | Genesis, SNES, NES, Game Boy families | Libretro core selection through `runtime.profile` |
+| `scummvm` | ScummVM and point-and-click bundles | Game ID supplied through `runtime.profile` |
+| `mame` | Arcade, Neo Geo | Driver/profile launch with ROM directory isolation |
+| `vice` | C64, C128, VIC-20 | Autostart launch for Commodore disk/tape artefacts |
+| `fuse` | ZX Spectrum 48K/128K | Machine profile mapped to FUSE machine selection |
+| `snes9x` | SNES, Super Nintendo | Standalone SNES runner where RetroArch is not desired |
+
 ### 6.3 Engine selection
 
 Engine selection should be explicit first, heuristic second.
@@ -452,8 +465,11 @@ Manifest permissions can narrow access further. They should not silently widen
 host access beyond platform policy.
 
 Before launch, the resolved engine plan must be checked against the prepared
-sandbox policy. A launch plan that requests network access, read paths, or write
-paths outside the manifest-derived allowlist is rejected before process start.
+sandbox policy. A launch plan that requests network access, read paths, runtime
+config access, or write paths outside the manifest-derived allowlist is rejected
+before process start. Required runtime files such as the artefact, entrypoint,
+and `emulator.yaml` are folded into the effective read allowlist so adapters
+cannot rely on undeclared bundle reads.
 
 ### 6.5 Save-state layout
 
@@ -729,6 +745,9 @@ visible while the first runnable slice lands.
 
 ## Changelog
 
+- 2026-04-27: Pass 4 added MAME, VICE, FUSE, and standalone Snes9x adapter
+  scaffolds, tightened canonical bundle path handling, and expanded sandbox
+  read/write allowlist enforcement around runtime config access.
 - 2026-04-27: Pass 3 tightened checksum-chain coverage semantics, added
   DOSBox-X adapter planning, enforced launch-plan sandbox boundaries, and pinned
   parser/catalogue verification tests.

@@ -45,6 +45,12 @@ func inferEngineForPlatform(platform string) string {
 		return "retroarch"
 	case "scummvm", "point-and-click":
 		return "scummvm"
+	case "arcade", "neo-geo":
+		return "mame"
+	case "commodore-64", "c64", "commodore-128", "c128", "vic-20":
+		return "vice"
+	case "zx-spectrum", "spectrum", "zx-spectrum-48k", "zx-spectrum-128k":
+		return "fuse"
 	default:
 		return ""
 	}
@@ -82,6 +88,22 @@ func inferProfileForPlatform(platform string, engine string) string {
 		default:
 			return ""
 		}
+	case "vice":
+		switch platform {
+		case "commodore-128", "c128":
+			return "c128"
+		case "vic-20":
+			return "vic-20"
+		default:
+			return "c64"
+		}
+	case "fuse":
+		switch platform {
+		case "zx-spectrum-128k":
+			return "128k"
+		default:
+			return "48k"
+		}
 	default:
 		return ""
 	}
@@ -109,6 +131,8 @@ func inferFrameFilter(requested FrameFilter, engine string) FrameFilter {
 	case "retroarch":
 		return FrameFilterNearest
 	case "scummvm":
+		return FrameFilterNearest
+	case "mame", "vice", "fuse", "snes9x":
 		return FrameFilterNearest
 	default:
 		return FrameFilterNone

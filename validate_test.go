@@ -70,6 +70,30 @@ func TestValidate_Manifest_Ugly(testingT *testing.T) {
 	}
 }
 
+func TestValidate_BundlePathCanonical_Ugly(testingT *testing.T) {
+	testingT.Parallel()
+
+	manifest, err := LoadManifest([]byte(validManifestYAML()))
+	if err != nil {
+		testingT.Fatalf("LoadManifest returned error: %v", err)
+	}
+
+	manifest.Artefact.Path = "rom/../payload.bin"
+	manifest.Runtime.Config = "config//emulator.yaml"
+	manifest.Permissions.FileSystem.Read = []string{"rom\\game.zip"}
+
+	issues := manifest.Validate()
+	if !hasIssueCode(issues, "manifest/artefact-path-invalid") {
+		testingT.Fatalf("Validate missing canonical artefact path issue: %v", issues)
+	}
+	if !hasIssueCode(issues, "manifest/runtime-config-invalid") {
+		testingT.Fatalf("Validate missing canonical runtime config issue: %v", issues)
+	}
+	if !hasIssueCode(issues, "manifest/filesystem-read-invalid") {
+		testingT.Fatalf("Validate missing filesystem read path issue: %v", issues)
+	}
+}
+
 func hasIssueCode(issues ValidationErrors, code string) bool {
 	for _, issue := range issues {
 		if issue.Code == code {

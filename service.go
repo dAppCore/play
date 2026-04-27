@@ -104,6 +104,8 @@ func (service Service) PreparePlay(request PlayRequest) (PlayPlan, error) {
 		launchPlan, launchErr := PlanLaunch(bundle, engine)
 		if launchErr == nil {
 			launch = &launchPlan
+		} else {
+			issues = append(issues, launchValidationIssue(launchErr))
 		}
 	}
 
@@ -113,7 +115,7 @@ func (service Service) PreparePlay(request PlayRequest) (PlayPlan, error) {
 		Engine:   engine,
 		Launch:   launch,
 		Issues:   issues,
-		Ready:    found && !issues.HasIssues(),
+		Ready:    found && !issues.HasIssues() && launch != nil,
 	}, nil
 }
 
@@ -270,4 +272,30 @@ func (service Service) registry() *Registry {
 	}
 
 	return service.Registry
+}
+
+func launchValidationIssue(err error) ValidationIssue {
+	issue := ValidationIssue{
+		Code:    "engine/plan-failed",
+		Field:   "runtime.engine",
+		Message: err.Error(),
+	}
+
+	engineError, ok := err.(EngineError)
+	if !ok {
+		return issue
+	}
+
+	issue.Code = engineError.Kind
+	issue.Message = engineError.Message
+	switch engineError.Kind {
+	case "engine/profile-required", "engine/profile-unsupported":
+		issue.Field = "runtime.profile"
+	case "engine/platform-unsupported":
+		issue.Field = "platform"
+	default:
+		issue.Field = "runtime.engine"
+	}
+
+	return issue
 }

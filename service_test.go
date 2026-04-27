@@ -98,7 +98,7 @@ func TestService_PreparePlay_Good(testingT *testing.T) {
 	testingT.Parallel()
 
 	registry := NewRegistry()
-	if err := registry.Register(stubEngine{name: "retroarch", platforms: []string{"sega-genesis"}}); err != nil {
+	if err := registry.Register(RetroArchEngine{Binary: "retroarch"}); err != nil {
 		testingT.Fatalf("Register returned error: %v", err)
 	}
 
@@ -113,6 +113,31 @@ func TestService_PreparePlay_Good(testingT *testing.T) {
 	}
 	if plan.Engine == nil {
 		testingT.Fatal("PreparePlay expected a resolved engine")
+	}
+}
+
+func TestService_PreparePlayLaunchError_Ugly(testingT *testing.T) {
+	testingT.Parallel()
+
+	registry := NewRegistry()
+	if err := registry.Register(RetroArchEngine{Binary: "retroarch"}); err != nil {
+		testingT.Fatalf("Register returned error: %v", err)
+	}
+
+	service := NewService(unsupportedProfileBundleFS(), registry)
+	plan, err := service.PreparePlay(PlayRequest{BundlePath: "."})
+	if err != nil {
+		testingT.Fatalf("PreparePlay returned error: %v", err)
+	}
+
+	if plan.Ready {
+		testingT.Fatal("PreparePlay should not mark an unsupported launch plan ready")
+	}
+	if plan.Launch != nil {
+		testingT.Fatalf("PreparePlay should not keep an invalid launch plan: %v", plan.Launch)
+	}
+	if !hasIssueCode(plan.Issues, "engine/profile-unsupported") {
+		testingT.Fatalf("PreparePlay missing engine/profile-unsupported issue: %v", plan.Issues)
 	}
 }
 
@@ -407,5 +432,63 @@ distribution:
 		"checksums.sha256":  {Data: checksumData},
 		"sbom.json":         {Data: sbomData},
 		"game/BASS/sky.dsk": {Data: artefactData},
+	}
+}
+
+func unsupportedProfileBundleFS() fstest.MapFS {
+	romData := []byte("rom")
+	emulatorData := []byte("engine: retroarch\nprofile: unsupported\n")
+	manifestData := []byte(`name: mega-lo-mania
+title: "Mega lo Mania"
+platform: sega-genesis
+licence: freeware
+artefact:
+  path: rom/MegaLoMania.zip
+  sha256: "` + hashHex(romData) + `"
+runtime:
+  engine: retroarch
+  profile: unsupported
+  config: emulator.yaml
+  entrypoint: rom/MegaLoMania.zip
+verification:
+  chain: checksums.sha256
+  sbom: sbom.json
+  deterministic: true
+permissions:
+  network: false
+  microphone: false
+  filesystem:
+    read:
+      - rom/
+    write:
+      - saves/
+      - screenshots/
+save:
+  path: saves/
+  screenshots: screenshots/
+distribution:
+  mode: catalogue
+`)
+	manifest, err := LoadManifest(manifestData)
+	if err != nil {
+		panic(err)
+	}
+	sbomData, err := BuildSBOM(manifest)
+	if err != nil {
+		panic(err)
+	}
+	checksumData := []byte(
+		hashHex(manifestData) + "  manifest.yaml\n" +
+			hashHex(emulatorData) + "  emulator.yaml\n" +
+			hashHex(sbomData) + "  sbom.json\n" +
+			hashHex(romData) + "  rom/MegaLoMania.zip\n",
+	)
+
+	return fstest.MapFS{
+		"manifest.yaml":       {Data: manifestData},
+		"emulator.yaml":       {Data: emulatorData},
+		"checksums.sha256":    {Data: checksumData},
+		"sbom.json":           {Data: sbomData},
+		"rom/MegaLoMania.zip": {Data: romData},
 	}
 }

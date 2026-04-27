@@ -274,9 +274,11 @@ func runLaunch(ctx context.Context, c *core.Core, parsed invocation, out io.Writ
 			printIssues(out, sandboxIssues)
 			return sandboxIssues
 		}
+	} else {
+		return core.E("play.launch", "runtime engine did not provide a launch plan", nil)
 	}
 
-	return plan.Engine.Run(plan.Manifest.Artefact.Path, play.EngineConfig{
+	return plan.Engine.Run(plan.Launch.Entrypoint, play.EngineConfig{
 		Core:             c,
 		Context:          ctx,
 		WorkingDirectory: path.Join(root, parsed.Bundle),

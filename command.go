@@ -57,7 +57,7 @@ func Register(c *core.Core) {
 }
 
 func cmdPlay(opts core.Options) core.Result {
-	bundlePath := opts.String("_arg")
+	bundlePath := firstOptionString(opts, "_arg", "bundle", "name", "path")
 	if bundlePath == "" {
 		bundlePath = "."
 	}
@@ -75,13 +75,16 @@ func cmdPlayList(opts core.Options) core.Result {
 	}
 
 	return core.Result{
-		Value: ListRequest{Root: root},
-		OK:    true,
+		Value: ListRequest{
+			Root: root,
+			JSON: opts.Bool("json"),
+		},
+		OK: true,
 	}
 }
 
 func cmdPlayVerify(opts core.Options) core.Result {
-	bundlePath := opts.String("_arg")
+	bundlePath := firstOptionString(opts, "_arg", "bundle", "name", "path")
 	if bundlePath == "" {
 		bundlePath = "."
 	}
@@ -98,16 +101,39 @@ func cmdPlayBundle(opts core.Options) core.Result {
 			Name:              opts.String("name"),
 			Title:             opts.String("title"),
 			Author:            opts.String("author"),
+			Year:              opts.Int("year"),
 			Platform:          opts.String("platform"),
 			Genre:             opts.String("genre"),
 			Licence:           opts.String("licence"),
 			Engine:            opts.String("engine"),
 			Profile:           opts.String("profile"),
-			ArtefactPath:      opts.String("artefact"),
+			Acceleration:      AccelerationMode(firstOptionString(opts, "acceleration")),
+			Filter:            FrameFilter(firstOptionString(opts, "filter")),
+			ArtefactPath:      firstOptionString(opts, "rom", "artefact", "artefact_path"),
+			ArtefactData:      optionBytes(opts, "artefact_data", "rom_data"),
+			ArtefactSHA256:    firstOptionString(opts, "artefact_sha256", "sha256"),
+			ArtefactSize:      firstOptionInt64(opts, "artefact_size", "size"),
+			ArtefactMediaType: firstOptionString(opts, "artefact_media_type", "media_type"),
 			ArtefactSource:    opts.String("source"),
+			EngineBinaryPath:  firstOptionString(opts, "engine_binary", "engine-binary"),
+			EngineBinaryData:  optionBytes(opts, "engine_binary_data"),
+			EngineBinarySHA256: firstOptionString(
+				opts,
+				"engine_binary_sha256",
+				"engine-sha256",
+			),
+			ResourceLimits: ResourceLimits{
+				CPUPercent:  firstOptionInt(opts, "cpu_percent", "cpu-percent"),
+				MemoryBytes: firstOptionInt64(opts, "memory_bytes", "memory-bytes"),
+			},
+			DistributionMode:  firstOptionString(opts, "distribution_mode", "distribution"),
+			BYOROM:            opts.Bool("byorom"),
+			Entrypoint:        opts.String("entrypoint"),
 			RuntimeConfigPath: opts.String("config"),
 			VerificationChain: opts.String("chain"),
 			SBOMPath:          opts.String("sbom"),
+			SavePath:          firstOptionString(opts, "save_path", "save"),
+			ScreenshotPath:    firstOptionString(opts, "screenshot_path", "screenshots"),
 		},
 		OK: true,
 	}
@@ -167,4 +193,62 @@ type BundleRequest struct {
 	SBOMPath           string
 	SavePath           string
 	ScreenshotPath     string
+}
+
+func firstOptionString(opts core.Options, keys ...string) string {
+	for _, key := range keys {
+		if value := opts.String(key); value != "" {
+			return value
+		}
+	}
+
+	return ""
+}
+
+func firstOptionInt(opts core.Options, keys ...string) int {
+	for _, key := range keys {
+		if value := opts.Int(key); value != 0 {
+			return value
+		}
+	}
+
+	return 0
+}
+
+func firstOptionInt64(opts core.Options, keys ...string) int64 {
+	for _, key := range keys {
+		result := opts.Get(key)
+		if !result.OK {
+			continue
+		}
+
+		switch value := result.Value.(type) {
+		case int64:
+			if value != 0 {
+				return value
+			}
+		case int:
+			if value != 0 {
+				return int64(value)
+			}
+		}
+	}
+
+	return 0
+}
+
+func optionBytes(opts core.Options, keys ...string) []byte {
+	for _, key := range keys {
+		result := opts.Get(key)
+		if !result.OK {
+			continue
+		}
+
+		data, ok := result.Value.([]byte)
+		if ok && len(data) > 0 {
+			return cloneBytes(data)
+		}
+	}
+
+	return nil
 }

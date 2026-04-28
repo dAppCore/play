@@ -3,7 +3,7 @@ package play
 import (
 	"bytes"
 
-	"dappco.re/go/core"
+	core "dappco.re/go"
 )
 
 const (

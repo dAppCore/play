@@ -3,5 +3,7 @@
 package play
 
 func init() {
-	_ = RegisterEngine(DOSBoxXEngine{Binary: "dosbox-x"})
+	if err := RegisterEngine(DOSBoxXEngine{Binary: "dosbox-x"}); err != nil {
+		panic(err)
+	}
 }

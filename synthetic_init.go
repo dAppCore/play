@@ -3,5 +3,7 @@
 package play
 
 func init() {
-	_ = RegisterEngine(SyntheticEngine{})
+	if err := RegisterEngine(SyntheticEngine{}); err != nil {
+		panic(err)
+	}
 }

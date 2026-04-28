@@ -3,7 +3,7 @@ package play
 import (
 	"testing"
 
-	"dappco.re/go/core"
+	core "dappco.re/go"
 )
 
 func TestCommand_Commands_Good(testingT *testing.T) {
@@ -60,6 +60,9 @@ func TestCommand_Register_Bad(testingT *testing.T) {
 	testingT.Parallel()
 
 	Register(nil)
+	if Commands()[0] != CommandPlay {
+		testingT.Fatalf("Register(nil) altered command ordering")
+	}
 }
 
 func TestCommand_Register_Ugly(testingT *testing.T) {

@@ -3,5 +3,7 @@
 package play
 
 func init() {
-	_ = RegisterEngine(ScummVMEngine{Binary: "scummvm"})
+	if err := RegisterEngine(ScummVMEngine{Binary: "scummvm"}); err != nil {
+		panic(err)
+	}
 }

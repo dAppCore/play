@@ -1,6 +1,6 @@
 package play
 
-import "dappco.re/go/core"
+import core "dappco.re/go"
 
 // Core Play command names.
 const (
@@ -62,10 +62,7 @@ func cmdPlay(opts core.Options) core.Result {
 		bundlePath = "."
 	}
 
-	return core.Result{
-		Value: PlayRequest{BundlePath: bundlePath},
-		OK:    true,
-	}
+	return core.Ok(PlayRequest{BundlePath: bundlePath})
 }
 
 func cmdPlayList(opts core.Options) core.Result {
@@ -74,13 +71,10 @@ func cmdPlayList(opts core.Options) core.Result {
 		root = "."
 	}
 
-	return core.Result{
-		Value: ListRequest{
-			Root: root,
-			JSON: opts.Bool("json"),
-		},
-		OK: true,
-	}
+	return core.Ok(ListRequest{
+		Root: root,
+		JSON: opts.Bool("json"),
+	})
 }
 
 func cmdPlayVerify(opts core.Options) core.Result {
@@ -89,61 +83,52 @@ func cmdPlayVerify(opts core.Options) core.Result {
 		bundlePath = "."
 	}
 
-	return core.Result{
-		Value: VerifyRequest{BundlePath: bundlePath},
-		OK:    true,
-	}
+	return core.Ok(VerifyRequest{BundlePath: bundlePath})
 }
 
 func cmdPlayBundle(opts core.Options) core.Result {
-	return core.Result{
-		Value: BundleRequest{
-			Name:              opts.String("name"),
-			Title:             opts.String("title"),
-			Author:            opts.String("author"),
-			Year:              opts.Int("year"),
-			Platform:          opts.String("platform"),
-			Genre:             opts.String("genre"),
-			Licence:           opts.String("licence"),
-			Engine:            opts.String("engine"),
-			Profile:           opts.String("profile"),
-			Acceleration:      AccelerationMode(firstOptionString(opts, "acceleration")),
-			Filter:            FrameFilter(firstOptionString(opts, "filter")),
-			ArtefactPath:      firstOptionString(opts, "rom", "artefact", "artefact_path"),
-			ArtefactData:      optionBytes(opts, "artefact_data", "rom_data"),
-			ArtefactSHA256:    firstOptionString(opts, "artefact_sha256", "sha256"),
-			ArtefactSize:      firstOptionInt64(opts, "artefact_size", "size"),
-			ArtefactMediaType: firstOptionString(opts, "artefact_media_type", "media_type"),
-			ArtefactSource:    opts.String("source"),
-			EngineBinaryPath:  firstOptionString(opts, "engine_binary", "engine-binary"),
-			EngineBinaryData:  optionBytes(opts, "engine_binary_data"),
-			EngineBinarySHA256: firstOptionString(
-				opts,
-				"engine_binary_sha256",
-				"engine-sha256",
-			),
-			ResourceLimits: ResourceLimits{
-				CPUPercent:  firstOptionInt(opts, "cpu_percent", "cpu-percent"),
-				MemoryBytes: firstOptionInt64(opts, "memory_bytes", "memory-bytes"),
-			},
-			DistributionMode:  firstOptionString(opts, "distribution_mode", "distribution"),
-			BYOROM:            opts.Bool("byorom"),
-			Entrypoint:        opts.String("entrypoint"),
-			RuntimeConfigPath: opts.String("config"),
-			VerificationChain: opts.String("chain"),
-			SBOMPath:          opts.String("sbom"),
-			SavePath:          firstOptionString(opts, "save_path", "save"),
-			ScreenshotPath:    firstOptionString(opts, "screenshot_path", "screenshots"),
+	return core.Ok(BundleRequest{
+		Name:              opts.String("name"),
+		Title:             opts.String("title"),
+		Author:            opts.String("author"),
+		Year:              opts.Int("year"),
+		Platform:          opts.String("platform"),
+		Genre:             opts.String("genre"),
+		Licence:           opts.String("licence"),
+		Engine:            opts.String("engine"),
+		Profile:           opts.String("profile"),
+		Acceleration:      AccelerationMode(firstOptionString(opts, "acceleration")),
+		Filter:            FrameFilter(firstOptionString(opts, "filter")),
+		ArtefactPath:      firstOptionString(opts, "rom", "artefact", "artefact_path"),
+		ArtefactData:      optionBytes(opts, "artefact_data", "rom_data"),
+		ArtefactSHA256:    firstOptionString(opts, "artefact_sha256", "sha256"),
+		ArtefactSize:      firstOptionInt64(opts, "artefact_size", "size"),
+		ArtefactMediaType: firstOptionString(opts, "artefact_media_type", "media_type"),
+		ArtefactSource:    opts.String("source"),
+		EngineBinaryPath:  firstOptionString(opts, "engine_binary", "engine-binary"),
+		EngineBinaryData:  optionBytes(opts, "engine_binary_data"),
+		EngineBinarySHA256: firstOptionString(
+			opts,
+			"engine_binary_sha256",
+			"engine-sha256",
+		),
+		ResourceLimits: ResourceLimits{
+			CPUPercent:  firstOptionInt(opts, "cpu_percent", "cpu-percent"),
+			MemoryBytes: firstOptionInt64(opts, "memory_bytes", "memory-bytes"),
 		},
-		OK: true,
-	}
+		DistributionMode:  firstOptionString(opts, "distribution_mode", "distribution"),
+		BYOROM:            opts.Bool("byorom"),
+		Entrypoint:        opts.String("entrypoint"),
+		RuntimeConfigPath: opts.String("config"),
+		VerificationChain: opts.String("chain"),
+		SBOMPath:          opts.String("sbom"),
+		SavePath:          firstOptionString(opts, "save_path", "save"),
+		ScreenshotPath:    firstOptionString(opts, "screenshot_path", "screenshots"),
+	})
 }
 
 func cmdPlayEngines(core.Options) core.Result {
-	return core.Result{
-		Value: RegisteredEngines(),
-		OK:    true,
-	}
+	return core.Ok(RegisteredEngines())
 }
 
 // PlayRequest describes a request to prepare a bundle for launch.

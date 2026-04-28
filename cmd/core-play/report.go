@@ -5,7 +5,7 @@ import (
 	"os"
 	"path"
 
-	"dappco.re/go/core"
+	core "dappco.re/go"
 	"dappco.re/go/play"
 )
 

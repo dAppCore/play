@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"dappco.re/go/core"
+	core "dappco.re/go"
 )
 
 func TestScummvm_Verify_Good(testingT *testing.T) {
@@ -77,7 +77,7 @@ func TestScummvm_ProcessVerify_Ugly(testingT *testing.T) {
 
 	c := core.New()
 	c.Action("process.run", func(context.Context, core.Options) core.Result {
-		return core.Result{Value: "missing scummvm", OK: false}
+		return core.Fail(core.NewError("missing scummvm"))
 	})
 
 	err := (ScummVMEngine{Binary: "scummvm", Core: c}).Verify()
@@ -119,7 +119,7 @@ func TestScummvm_PlanLaunch_Good(testingT *testing.T) {
 func scummVMCore(versionOutput string) *core.Core {
 	c := core.New()
 	c.Action("process.run", func(context.Context, core.Options) core.Result {
-		return core.Result{Value: versionOutput, OK: true}
+		return core.Ok(versionOutput)
 	})
 
 	return c

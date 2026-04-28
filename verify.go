@@ -234,7 +234,7 @@ func verifyChecksumCoverage(filesystem fs.FS, manifest Manifest, recordedPaths m
 	var issues ValidationErrors
 	chainPath := normaliseBundlePath(manifest.Verification.Chain)
 
-	_ = fs.WalkDir(filesystem, ".", func(candidatePath string, entry fs.DirEntry, walkErr error) error {
+	if err := fs.WalkDir(filesystem, ".", func(candidatePath string, entry fs.DirEntry, walkErr error) error {
 		if walkErr != nil || entry.IsDir() {
 			return nil
 		}
@@ -254,7 +254,13 @@ func verifyChecksumCoverage(filesystem fs.FS, manifest Manifest, recordedPaths m
 		})
 
 		return nil
-	})
+	}); err != nil {
+		issues = append(issues, ValidationIssue{
+			Code:    "hash/coverage-failed",
+			Field:   "verification.chain",
+			Message: "bundle file coverage could not be checked",
+		})
+	}
 
 	return issues
 }

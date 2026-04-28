@@ -6,7 +6,7 @@ import (
 	"path"
 	"sort"
 
-	"dappco.re/go/core"
+	core "dappco.re/go"
 )
 
 // BundleSummary describes a bundle for list and verify surfaces.
@@ -141,7 +141,7 @@ func (catalogue Catalogue) registry() *Registry {
 
 func (catalogue Catalogue) bundleSize(bundlePath string) int64 {
 	var size int64
-	_ = fs.WalkDir(catalogue.Bundles, bundlePath, func(_ string, entry fs.DirEntry, walkErr error) error {
+	if err := fs.WalkDir(catalogue.Bundles, bundlePath, func(_ string, entry fs.DirEntry, walkErr error) error {
 		if walkErr != nil || entry.IsDir() {
 			return nil
 		}
@@ -152,7 +152,9 @@ func (catalogue Catalogue) bundleSize(bundlePath string) int64 {
 		size += info.Size()
 
 		return nil
-	})
+	}); err != nil {
+		return 0
+	}
 
 	return size
 }

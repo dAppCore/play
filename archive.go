@@ -41,7 +41,13 @@ func (rendered RenderedBundle) Archive() ([]byte, error) {
 
 		writer, err := archive.CreateHeader(header)
 		if err != nil {
-			_ = archive.Close()
+			if closeErr := archive.Close(); closeErr != nil {
+				return nil, WriteError{
+					Kind:    "bundle/archive-close-failed",
+					Path:    rootPath,
+					Message: closeErr.Error(),
+				}
+			}
 			return nil, WriteError{
 				Kind:    "bundle/archive-file-create-failed",
 				Path:    file.Path,
@@ -49,7 +55,13 @@ func (rendered RenderedBundle) Archive() ([]byte, error) {
 			}
 		}
 		if _, err := writer.Write(file.Data); err != nil {
-			_ = archive.Close()
+			if closeErr := archive.Close(); closeErr != nil {
+				return nil, WriteError{
+					Kind:    "bundle/archive-close-failed",
+					Path:    rootPath,
+					Message: closeErr.Error(),
+				}
+			}
 			return nil, WriteError{
 				Kind:    "bundle/archive-file-write-failed",
 				Path:    file.Path,

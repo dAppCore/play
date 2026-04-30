@@ -5,7 +5,7 @@ import (
 	"io"
 	"sort"
 
-	"dappco.re/go/core"
+	core "dappco.re/go"
 )
 
 // Engine defines a runnable STIM runtime adapter.

@@ -3,5 +3,7 @@
 package play
 
 func init() {
-	_ = RegisterEngine(Snes9xEngine{Binary: "snes9x"})
+	if err := RegisterEngine(Snes9xEngine{Binary: "snes9x"}); err != nil {
+		panic(err)
+	}
 }

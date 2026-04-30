@@ -5,7 +5,7 @@ import (
 	"path"
 	"strconv"
 
-	"dappco.re/go/core"
+	core "dappco.re/go"
 )
 
 // ScummVMEngine is a first-pass ScummVM adapter scaffold.

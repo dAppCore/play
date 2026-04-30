@@ -3,5 +3,7 @@
 package play
 
 func init() {
-	_ = RegisterEngine(MAMEEngine{Binary: "mame"})
+	if err := RegisterEngine(MAMEEngine{Binary: "mame"}); err != nil {
+		panic(err)
+	}
 }

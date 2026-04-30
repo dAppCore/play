@@ -3,5 +3,7 @@
 package play
 
 func init() {
-	_ = RegisterEngine(RetroArchEngine{Binary: "retroarch"})
+	if err := RegisterEngine(RetroArchEngine{Binary: "retroarch"}); err != nil {
+		panic(err)
+	}
 }

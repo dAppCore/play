@@ -3,5 +3,7 @@
 package play
 
 func init() {
-	_ = RegisterEngine(FUSEEngine{Binary: "fuse"})
+	if err := RegisterEngine(FUSEEngine{Binary: "fuse"}); err != nil {
+		panic(err)
+	}
 }

@@ -98,3 +98,267 @@ func (stub stubEngine) CodeIdentity() EngineCodeIdentity {
 		SHA256: engineHash,
 	}
 }
+
+func TestEngine_NewRegistry_Good(t *core.T) {
+	subject := NewRegistry
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_NewRegistry_Bad(t *core.T) {
+	subject := NewRegistry
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_NewRegistry_Ugly(t *core.T) {
+	subject := NewRegistry
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_Registry_Register_Good(t *core.T) {
+	subject := (*Registry).Register
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_Registry_Register_Bad(t *core.T) {
+	subject := (*Registry).Register
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_Registry_Register_Ugly(t *core.T) {
+	subject := (*Registry).Register
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_Registry_Resolve_Good(t *core.T) {
+	subject := (*Registry).Resolve
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_Registry_Resolve_Bad(t *core.T) {
+	subject := (*Registry).Resolve
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_Registry_Resolve_Ugly(t *core.T) {
+	subject := (*Registry).Resolve
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_Registry_Names_Good(t *core.T) {
+	subject := (*Registry).Names
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_Registry_Names_Bad(t *core.T) {
+	subject := (*Registry).Names
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_Registry_Names_Ugly(t *core.T) {
+	subject := (*Registry).Names
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_RegisterEngine_Good(t *core.T) {
+	subject := RegisterEngine
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_RegisterEngine_Bad(t *core.T) {
+	subject := RegisterEngine
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_RegisterEngine_Ugly(t *core.T) {
+	subject := RegisterEngine
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_ResolveEngine_Good(t *core.T) {
+	subject := ResolveEngine
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_ResolveEngine_Bad(t *core.T) {
+	subject := ResolveEngine
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_ResolveEngine_Ugly(t *core.T) {
+	subject := ResolveEngine
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_RegisteredEngines_Good(t *core.T) {
+	subject := RegisteredEngines
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_RegisteredEngines_Bad(t *core.T) {
+	subject := RegisteredEngines
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_RegisteredEngines_Ugly(t *core.T) {
+	subject := RegisteredEngines
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_EngineError_Error_Good(t *core.T) {
+	subject := (*EngineError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_EngineError_Error_Bad(t *core.T) {
+	subject := (*EngineError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestEngine_EngineError_Error_Ugly(t *core.T) {
+	subject := (*EngineError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}

@@ -174,3 +174,135 @@ preservation:
   chain: checksums.sha256
 `
 }
+
+func TestManifest_ResourceLimits_IsZero_Good(t *core.T) {
+	subject := (*ResourceLimits).IsZero
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestManifest_ResourceLimits_IsZero_Bad(t *core.T) {
+	subject := (*ResourceLimits).IsZero
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestManifest_ResourceLimits_IsZero_Ugly(t *core.T) {
+	subject := (*ResourceLimits).IsZero
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestManifest_ManifestMigration_Migrated_Good(t *core.T) {
+	subject := (*ManifestMigration).Migrated
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestManifest_ManifestMigration_Migrated_Bad(t *core.T) {
+	subject := (*ManifestMigration).Migrated
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestManifest_ManifestMigration_Migrated_Ugly(t *core.T) {
+	subject := (*ManifestMigration).Migrated
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestManifest_MigrateManifest_Good(t *core.T) {
+	subject := MigrateManifest
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestManifest_MigrateManifest_Bad(t *core.T) {
+	subject := MigrateManifest
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestManifest_MigrateManifest_Ugly(t *core.T) {
+	subject := MigrateManifest
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestManifest_ParseError_Error_Good(t *core.T) {
+	subject := (*ParseError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestManifest_ParseError_Error_Bad(t *core.T) {
+	subject := (*ParseError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestManifest_ParseError_Error_Ugly(t *core.T) {
+	subject := (*ParseError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}

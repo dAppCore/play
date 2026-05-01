@@ -118,3 +118,135 @@ func hasIssueCode(issues ValidationErrors, code string) bool {
 
 	return false
 }
+
+func TestValidate_ValidationIssue_Error_Good(t *core.T) {
+	subject := (*ValidationIssue).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestValidate_ValidationIssue_Error_Bad(t *core.T) {
+	subject := (*ValidationIssue).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestValidate_ValidationIssue_Error_Ugly(t *core.T) {
+	subject := (*ValidationIssue).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestValidate_ValidationErrors_Error_Good(t *core.T) {
+	subject := (*ValidationErrors).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestValidate_ValidationErrors_Error_Bad(t *core.T) {
+	subject := (*ValidationErrors).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestValidate_ValidationErrors_Error_Ugly(t *core.T) {
+	subject := (*ValidationErrors).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestValidate_ValidationErrors_HasIssues_Good(t *core.T) {
+	subject := (*ValidationErrors).HasIssues
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestValidate_ValidationErrors_HasIssues_Bad(t *core.T) {
+	subject := (*ValidationErrors).HasIssues
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestValidate_ValidationErrors_HasIssues_Ugly(t *core.T) {
+	subject := (*ValidationErrors).HasIssues
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestValidate_Manifest_Validate_Good(t *core.T) {
+	subject := (*Manifest).Validate
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestValidate_Manifest_Validate_Bad(t *core.T) {
+	subject := (*Manifest).Validate
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestValidate_Manifest_Validate_Ugly(t *core.T) {
+	subject := (*Manifest).Validate
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}

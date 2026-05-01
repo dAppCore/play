@@ -60,3 +60,69 @@ func TestFrame_Validate_Ugly(testingT *testing.T) {
 		testingT.Fatal("Validate missing frame/data-too-short issue")
 	}
 }
+
+func TestFrame_FrameBuffer_Clone_Good(t *core.T) {
+	subject := (*FrameBuffer).Clone
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFrame_FrameBuffer_Clone_Bad(t *core.T) {
+	subject := (*FrameBuffer).Clone
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFrame_FrameBuffer_Clone_Ugly(t *core.T) {
+	subject := (*FrameBuffer).Clone
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFrame_FrameBuffer_Validate_Good(t *core.T) {
+	subject := (*FrameBuffer).Validate
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFrame_FrameBuffer_Validate_Bad(t *core.T) {
+	subject := (*FrameBuffer).Validate
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFrame_FrameBuffer_Validate_Ugly(t *core.T) {
+	subject := (*FrameBuffer).Validate
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}

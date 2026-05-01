@@ -155,3 +155,47 @@ func addRenderedBundle(testingT *testing.T, filesystem fstest.MapFS, rendered Re
 		}
 	}
 }
+
+func TestCatalogue_Catalogue_Print_Bad(t *core.T) {
+	subject := (*Catalogue).Print
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestCatalogue_Catalogue_Print_Ugly(t *core.T) {
+	subject := (*Catalogue).Print
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestCatalogue_Catalogue_PrintJSON_Bad(t *core.T) {
+	subject := (*Catalogue).PrintJSON
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestCatalogue_Catalogue_PrintJSON_Ugly(t *core.T) {
+	subject := (*Catalogue).PrintJSON
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}

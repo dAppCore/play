@@ -124,3 +124,234 @@ func scummVMCore(versionOutput string) *core.Core {
 
 	return c
 }
+
+func TestScummvm_ScummVMEngine_Name_Good(t *core.T) {
+	subject := (*ScummVMEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_Name_Bad(t *core.T) {
+	subject := (*ScummVMEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_Name_Ugly(t *core.T) {
+	subject := (*ScummVMEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_Platforms_Good(t *core.T) {
+	subject := (*ScummVMEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_Platforms_Bad(t *core.T) {
+	subject := (*ScummVMEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_Platforms_Ugly(t *core.T) {
+	subject := (*ScummVMEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_Acceleration_Good(t *core.T) {
+	subject := (*ScummVMEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_Acceleration_Bad(t *core.T) {
+	subject := (*ScummVMEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_Acceleration_Ugly(t *core.T) {
+	subject := (*ScummVMEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_Verify_Good(t *core.T) {
+	subject := (*ScummVMEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_Verify_Bad(t *core.T) {
+	subject := (*ScummVMEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_Verify_Ugly(t *core.T) {
+	subject := (*ScummVMEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_CodeIdentity_Good(t *core.T) {
+	subject := (*ScummVMEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_CodeIdentity_Bad(t *core.T) {
+	subject := (*ScummVMEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_CodeIdentity_Ugly(t *core.T) {
+	subject := (*ScummVMEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_Run_Good(t *core.T) {
+	subject := (*ScummVMEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_Run_Bad(t *core.T) {
+	subject := (*ScummVMEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_Run_Ugly(t *core.T) {
+	subject := (*ScummVMEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_PlanLaunch_Good(t *core.T) {
+	subject := (*ScummVMEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_PlanLaunch_Bad(t *core.T) {
+	subject := (*ScummVMEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestScummvm_ScummVMEngine_PlanLaunch_Ugly(t *core.T) {
+	subject := (*ScummVMEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}

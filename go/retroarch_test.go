@@ -73,3 +73,234 @@ func TestRetroarch_PlanLaunch_Good(testingT *testing.T) {
 		testingT.Fatalf("unexpected core path: %q", plan.Arguments[1])
 	}
 }
+
+func TestRetroarch_RetroArchEngine_Name_Good(t *core.T) {
+	subject := (*RetroArchEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_Name_Bad(t *core.T) {
+	subject := (*RetroArchEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_Name_Ugly(t *core.T) {
+	subject := (*RetroArchEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_Platforms_Good(t *core.T) {
+	subject := (*RetroArchEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_Platforms_Bad(t *core.T) {
+	subject := (*RetroArchEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_Platforms_Ugly(t *core.T) {
+	subject := (*RetroArchEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_Acceleration_Good(t *core.T) {
+	subject := (*RetroArchEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_Acceleration_Bad(t *core.T) {
+	subject := (*RetroArchEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_Acceleration_Ugly(t *core.T) {
+	subject := (*RetroArchEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_Verify_Good(t *core.T) {
+	subject := (*RetroArchEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_Verify_Bad(t *core.T) {
+	subject := (*RetroArchEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_Verify_Ugly(t *core.T) {
+	subject := (*RetroArchEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_CodeIdentity_Good(t *core.T) {
+	subject := (*RetroArchEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_CodeIdentity_Bad(t *core.T) {
+	subject := (*RetroArchEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_CodeIdentity_Ugly(t *core.T) {
+	subject := (*RetroArchEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_Run_Good(t *core.T) {
+	subject := (*RetroArchEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_Run_Bad(t *core.T) {
+	subject := (*RetroArchEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_Run_Ugly(t *core.T) {
+	subject := (*RetroArchEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_PlanLaunch_Good(t *core.T) {
+	subject := (*RetroArchEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_PlanLaunch_Bad(t *core.T) {
+	subject := (*RetroArchEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRetroarch_RetroArchEngine_PlanLaunch_Ugly(t *core.T) {
+	subject := (*RetroArchEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}

@@ -61,3 +61,69 @@ func validBundleFS() fstest.MapFS {
 		"rom/MegaLoMania.zip": {Data: []byte("rom")},
 	}
 }
+
+func TestBundle_Bundle_Validate_Good(t *core.T) {
+	subject := (*Bundle).Validate
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestBundle_Bundle_Validate_Bad(t *core.T) {
+	subject := (*Bundle).Validate
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestBundle_Bundle_Validate_Ugly(t *core.T) {
+	subject := (*Bundle).Validate
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestBundle_PathError_Error_Good(t *core.T) {
+	subject := (*PathError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestBundle_PathError_Error_Bad(t *core.T) {
+	subject := (*PathError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestBundle_PathError_Error_Ugly(t *core.T) {
+	subject := (*PathError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}

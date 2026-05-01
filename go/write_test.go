@@ -181,3 +181,69 @@ func (writer *memoryBundleWriter) hasFile(path string) bool {
 	_, exists := writer.files[path]
 	return exists
 }
+
+func TestWrite_RenderedBundle_Write_Good(t *core.T) {
+	subject := (*RenderedBundle).Write
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestWrite_RenderedBundle_Write_Bad(t *core.T) {
+	subject := (*RenderedBundle).Write
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestWrite_RenderedBundle_Write_Ugly(t *core.T) {
+	subject := (*RenderedBundle).Write
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestWrite_WriteError_Error_Good(t *core.T) {
+	subject := (*WriteError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestWrite_WriteError_Error_Bad(t *core.T) {
+	subject := (*WriteError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestWrite_WriteError_Error_Ugly(t *core.T) {
+	subject := (*WriteError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}

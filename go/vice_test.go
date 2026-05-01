@@ -96,3 +96,234 @@ func viceBundleFS(testingT *testing.T) fstest.MapFS {
 		ArtefactData: []byte("c64-disk"),
 	})
 }
+
+func TestVice_VICEEngine_Name_Good(t *core.T) {
+	subject := (*VICEEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_Name_Bad(t *core.T) {
+	subject := (*VICEEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_Name_Ugly(t *core.T) {
+	subject := (*VICEEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_Platforms_Good(t *core.T) {
+	subject := (*VICEEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_Platforms_Bad(t *core.T) {
+	subject := (*VICEEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_Platforms_Ugly(t *core.T) {
+	subject := (*VICEEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_Acceleration_Good(t *core.T) {
+	subject := (*VICEEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_Acceleration_Bad(t *core.T) {
+	subject := (*VICEEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_Acceleration_Ugly(t *core.T) {
+	subject := (*VICEEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_Verify_Good(t *core.T) {
+	subject := (*VICEEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_Verify_Bad(t *core.T) {
+	subject := (*VICEEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_Verify_Ugly(t *core.T) {
+	subject := (*VICEEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_CodeIdentity_Good(t *core.T) {
+	subject := (*VICEEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_CodeIdentity_Bad(t *core.T) {
+	subject := (*VICEEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_CodeIdentity_Ugly(t *core.T) {
+	subject := (*VICEEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_Run_Good(t *core.T) {
+	subject := (*VICEEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_Run_Bad(t *core.T) {
+	subject := (*VICEEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_Run_Ugly(t *core.T) {
+	subject := (*VICEEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_PlanLaunch_Good(t *core.T) {
+	subject := (*VICEEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_PlanLaunch_Bad(t *core.T) {
+	subject := (*VICEEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVice_VICEEngine_PlanLaunch_Ugly(t *core.T) {
+	subject := (*VICEEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}

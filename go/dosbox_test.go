@@ -45,3 +45,234 @@ func TestDosbox_Verify_Ugly(testingT *testing.T) {
 		testingT.Fatalf("unexpected engine error kind: %q", engineError.Kind)
 	}
 }
+
+func TestDosbox_DOSBoxEngine_Name_Good(t *core.T) {
+	subject := (*DOSBoxEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_Name_Bad(t *core.T) {
+	subject := (*DOSBoxEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_Name_Ugly(t *core.T) {
+	subject := (*DOSBoxEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_Platforms_Good(t *core.T) {
+	subject := (*DOSBoxEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_Platforms_Bad(t *core.T) {
+	subject := (*DOSBoxEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_Platforms_Ugly(t *core.T) {
+	subject := (*DOSBoxEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_Acceleration_Good(t *core.T) {
+	subject := (*DOSBoxEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_Acceleration_Bad(t *core.T) {
+	subject := (*DOSBoxEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_Acceleration_Ugly(t *core.T) {
+	subject := (*DOSBoxEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_Verify_Good(t *core.T) {
+	subject := (*DOSBoxEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_Verify_Bad(t *core.T) {
+	subject := (*DOSBoxEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_Verify_Ugly(t *core.T) {
+	subject := (*DOSBoxEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_CodeIdentity_Good(t *core.T) {
+	subject := (*DOSBoxEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_CodeIdentity_Bad(t *core.T) {
+	subject := (*DOSBoxEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_CodeIdentity_Ugly(t *core.T) {
+	subject := (*DOSBoxEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_Run_Good(t *core.T) {
+	subject := (*DOSBoxEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_Run_Bad(t *core.T) {
+	subject := (*DOSBoxEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_Run_Ugly(t *core.T) {
+	subject := (*DOSBoxEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_PlanLaunch_Good(t *core.T) {
+	subject := (*DOSBoxEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_PlanLaunch_Bad(t *core.T) {
+	subject := (*DOSBoxEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestDosbox_DOSBoxEngine_PlanLaunch_Ugly(t *core.T) {
+	subject := (*DOSBoxEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}

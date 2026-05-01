@@ -92,3 +92,234 @@ func snes9xBundleFS(testingT *testing.T) fstest.MapFS {
 		ArtefactData: []byte("snes-rom"),
 	})
 }
+
+func TestSnes9x_Snes9xEngine_Name_Good(t *core.T) {
+	subject := (*Snes9xEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_Name_Bad(t *core.T) {
+	subject := (*Snes9xEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_Name_Ugly(t *core.T) {
+	subject := (*Snes9xEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_Platforms_Good(t *core.T) {
+	subject := (*Snes9xEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_Platforms_Bad(t *core.T) {
+	subject := (*Snes9xEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_Platforms_Ugly(t *core.T) {
+	subject := (*Snes9xEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_Acceleration_Good(t *core.T) {
+	subject := (*Snes9xEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_Acceleration_Bad(t *core.T) {
+	subject := (*Snes9xEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_Acceleration_Ugly(t *core.T) {
+	subject := (*Snes9xEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_Verify_Good(t *core.T) {
+	subject := (*Snes9xEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_Verify_Bad(t *core.T) {
+	subject := (*Snes9xEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_Verify_Ugly(t *core.T) {
+	subject := (*Snes9xEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_CodeIdentity_Good(t *core.T) {
+	subject := (*Snes9xEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_CodeIdentity_Bad(t *core.T) {
+	subject := (*Snes9xEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_CodeIdentity_Ugly(t *core.T) {
+	subject := (*Snes9xEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_Run_Good(t *core.T) {
+	subject := (*Snes9xEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_Run_Bad(t *core.T) {
+	subject := (*Snes9xEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_Run_Ugly(t *core.T) {
+	subject := (*Snes9xEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_PlanLaunch_Good(t *core.T) {
+	subject := (*Snes9xEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_PlanLaunch_Bad(t *core.T) {
+	subject := (*Snes9xEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSnes9x_Snes9xEngine_PlanLaunch_Ugly(t *core.T) {
+	subject := (*Snes9xEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}

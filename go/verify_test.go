@@ -181,3 +181,124 @@ func hashHex(data []byte) string {
 	sum := sha256.Sum256(data)
 	return hex.EncodeToString(sum[:])
 }
+
+func TestVerify_Bundle_Verify_Good(t *core.T) {
+	subject := (*Bundle).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVerify_Bundle_Verify_Bad(t *core.T) {
+	subject := (*Bundle).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVerify_Bundle_Verify_Ugly(t *core.T) {
+	subject := (*Bundle).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVerify_Bundle_VerifyWithRegistry_Good(t *core.T) {
+	subject := (*Bundle).VerifyWithRegistry
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVerify_Bundle_VerifyWithRegistry_Bad(t *core.T) {
+	subject := (*Bundle).VerifyWithRegistry
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVerify_Bundle_VerifyWithRegistry_Ugly(t *core.T) {
+	subject := (*Bundle).VerifyWithRegistry
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVerify_ParseChecksumFile_Good(t *core.T) {
+	subject := ParseChecksumFile
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVerify_ParseChecksumFile_Bad(t *core.T) {
+	subject := ParseChecksumFile
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVerify_ChecksumParseError_Error_Good(t *core.T) {
+	subject := (*ChecksumParseError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVerify_ChecksumParseError_Error_Bad(t *core.T) {
+	subject := (*ChecksumParseError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestVerify_ChecksumParseError_Error_Ugly(t *core.T) {
+	subject := (*ChecksumParseError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}

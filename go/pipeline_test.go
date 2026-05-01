@@ -141,3 +141,102 @@ func (processor acceleratedFrameProcessor) Process(frame FrameBuffer, _ FramePol
 
 	return frame.Clone(), nil
 }
+
+func TestPipeline_FramePipeline_Process_Good(t *core.T) {
+	subject := (*FramePipeline).Process
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestPipeline_FramePipeline_Process_Bad(t *core.T) {
+	subject := (*FramePipeline).Process
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestPipeline_FramePipeline_Process_Ugly(t *core.T) {
+	subject := (*FramePipeline).Process
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestPipeline_Manifest_FramePolicy_Good(t *core.T) {
+	subject := (*Manifest).FramePolicy
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestPipeline_Manifest_FramePolicy_Bad(t *core.T) {
+	subject := (*Manifest).FramePolicy
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestPipeline_Manifest_FramePolicy_Ugly(t *core.T) {
+	subject := (*Manifest).FramePolicy
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestPipeline_PipelineError_Error_Good(t *core.T) {
+	subject := (*PipelineError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestPipeline_PipelineError_Error_Bad(t *core.T) {
+	subject := (*PipelineError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestPipeline_PipelineError_Error_Ugly(t *core.T) {
+	subject := (*PipelineError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}

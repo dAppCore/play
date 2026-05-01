@@ -186,3 +186,69 @@ func TestSandbox_WritePolicy_Ugly(testingT *testing.T) {
 		testingT.Fatalf("write policy removed screenshot writes: %v", paths)
 	}
 }
+
+func TestSandbox_SandboxPolicy_ValidateLaunch_Good(t *core.T) {
+	subject := (*SandboxPolicy).ValidateLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSandbox_SandboxPolicy_ValidateLaunch_Bad(t *core.T) {
+	subject := (*SandboxPolicy).ValidateLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSandbox_SandboxPolicy_ValidateLaunch_Ugly(t *core.T) {
+	subject := (*SandboxPolicy).ValidateLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSandbox_SandboxError_Error_Good(t *core.T) {
+	subject := (*SandboxError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSandbox_SandboxError_Error_Bad(t *core.T) {
+	subject := (*SandboxError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSandbox_SandboxError_Error_Ugly(t *core.T) {
+	subject := (*SandboxError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}

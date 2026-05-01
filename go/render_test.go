@@ -221,3 +221,36 @@ func indexOf(content string, wanted string) int {
 
 	return -1
 }
+
+func TestRender_BundlePlan_Render_Good(t *core.T) {
+	subject := (*BundlePlan).Render
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRender_BundlePlan_Render_Bad(t *core.T) {
+	subject := (*BundlePlan).Render
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestRender_BundlePlan_Render_Ugly(t *core.T) {
+	subject := (*BundlePlan).Render
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}

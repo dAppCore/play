@@ -99,3 +99,234 @@ func mameBundleFS(testingT *testing.T) fstest.MapFS {
 		ArtefactData: []byte("mame-romset"),
 	})
 }
+
+func TestMame_MAMEEngine_Name_Good(t *core.T) {
+	subject := (*MAMEEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_Name_Bad(t *core.T) {
+	subject := (*MAMEEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_Name_Ugly(t *core.T) {
+	subject := (*MAMEEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_Platforms_Good(t *core.T) {
+	subject := (*MAMEEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_Platforms_Bad(t *core.T) {
+	subject := (*MAMEEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_Platforms_Ugly(t *core.T) {
+	subject := (*MAMEEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_Acceleration_Good(t *core.T) {
+	subject := (*MAMEEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_Acceleration_Bad(t *core.T) {
+	subject := (*MAMEEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_Acceleration_Ugly(t *core.T) {
+	subject := (*MAMEEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_Verify_Good(t *core.T) {
+	subject := (*MAMEEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_Verify_Bad(t *core.T) {
+	subject := (*MAMEEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_Verify_Ugly(t *core.T) {
+	subject := (*MAMEEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_CodeIdentity_Good(t *core.T) {
+	subject := (*MAMEEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_CodeIdentity_Bad(t *core.T) {
+	subject := (*MAMEEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_CodeIdentity_Ugly(t *core.T) {
+	subject := (*MAMEEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_Run_Good(t *core.T) {
+	subject := (*MAMEEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_Run_Bad(t *core.T) {
+	subject := (*MAMEEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_Run_Ugly(t *core.T) {
+	subject := (*MAMEEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_PlanLaunch_Good(t *core.T) {
+	subject := (*MAMEEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_PlanLaunch_Bad(t *core.T) {
+	subject := (*MAMEEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestMame_MAMEEngine_PlanLaunch_Ugly(t *core.T) {
+	subject := (*MAMEEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}

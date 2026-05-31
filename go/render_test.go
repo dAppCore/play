@@ -3,6 +3,8 @@ package play
 import (
 	"testing"
 	"testing/fstest"
+
+	core "dappco.re/go"
 )
 
 func TestRender_BundlePlan_Good(testingT *testing.T) {

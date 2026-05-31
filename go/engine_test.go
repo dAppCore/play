@@ -1,6 +1,10 @@
 package play
 
-import "testing"
+import (
+	"testing"
+
+	core "dappco.re/go"
+)
 
 func TestEngine_Register_Good(testingT *testing.T) {
 	testingT.Parallel()

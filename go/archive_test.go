@@ -4,6 +4,8 @@ import (
 	"archive/zip"
 	"bytes"
 	"testing"
+
+	core "dappco.re/go"
 )
 
 func TestArchive_RenderedBundle_Good(testingT *testing.T) {

@@ -1,6 +1,10 @@
 package play
 
-import "testing"
+import (
+	"testing"
+
+	core "dappco.re/go"
+)
 
 func TestDosbox_Verify_Good(testingT *testing.T) {
 	testingT.Parallel()

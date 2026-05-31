@@ -1,6 +1,10 @@
 package play
 
-import "testing"
+import (
+	"testing"
+
+	core "dappco.re/go"
+)
 
 func TestRetroarch_Verify_Good(testingT *testing.T) {
 	testingT.Parallel()

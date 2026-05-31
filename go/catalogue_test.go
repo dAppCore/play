@@ -5,6 +5,8 @@ import (
 	"path"
 	"testing"
 	"testing/fstest"
+
+	core "dappco.re/go"
 )
 
 func TestCatalogue_Walk_Good(testingT *testing.T) {

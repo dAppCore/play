@@ -1,6 +1,10 @@
 package play
 
-import "testing"
+import (
+	"testing"
+
+	core "dappco.re/go"
+)
 
 func TestFrame_Validate_Good(testingT *testing.T) {
 	testingT.Parallel()

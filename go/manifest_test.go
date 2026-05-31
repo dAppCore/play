@@ -1,6 +1,10 @@
 package play
 
-import "testing"
+import (
+	"testing"
+
+	core "dappco.re/go"
+)
 
 const validArtefactSHA256 = "1a0806c20104d3461d8ede70362f16734dbd6a17db24005d1841a7387c9b2405"
 

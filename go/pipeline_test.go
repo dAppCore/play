@@ -1,6 +1,10 @@
 package play
 
-import "testing"
+import (
+	"testing"
+
+	core "dappco.re/go"
+)
 
 func TestPipeline_Process_Good(testingT *testing.T) {
 	testingT.Parallel()

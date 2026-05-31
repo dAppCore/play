@@ -3,6 +3,8 @@ package play
 import (
 	"bytes"
 	"testing"
+
+	core "dappco.re/go"
 )
 
 func TestSynthetic_Run_Good(testingT *testing.T) {

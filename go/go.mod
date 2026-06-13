@@ -4,7 +4,7 @@ go 1.26.0
 
 require gopkg.in/yaml.v3 v3.0.1
 
-require dappco.re/go v0.9.0
+require dappco.re/go v0.10.4
 
 require (
 	github.com/kr/pretty v0.3.1 // indirect

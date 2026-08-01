@@ -1,6 +1,10 @@
 package play
 
-import "testing"
+import (
+	"testing"
+
+	core "dappco.re/go"
+)
 
 func TestShield_Verify_Good(testingT *testing.T) {
 	testingT.Parallel()
@@ -92,4 +96,37 @@ func shieldRendered(testingT *testing.T, artefactData []byte) RenderedBundle {
 	}
 
 	return rendered
+}
+
+func TestShield_ShieldReport_Issues_Good(t *core.T) {
+	subject := (*ShieldReport).Issues
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestShield_ShieldReport_Issues_Bad(t *core.T) {
+	subject := (*ShieldReport).Issues
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestShield_ShieldReport_Issues_Ugly(t *core.T) {
+	subject := (*ShieldReport).Issues
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
 }

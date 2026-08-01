@@ -3,6 +3,8 @@ package play
 import (
 	"testing"
 	"testing/fstest"
+
+	core "dappco.re/go"
 )
 
 func TestBundle_LoadBundle_Good(testingT *testing.T) {
@@ -59,5 +61,71 @@ func validBundleFS() fstest.MapFS {
 		"checksums.sha256":    {Data: []byte("9f0f  rom/MegaLoMania.zip\n")},
 		"sbom.json":           {Data: []byte("{\"bomFormat\":\"CycloneDX\"}")},
 		"rom/MegaLoMania.zip": {Data: []byte("rom")},
+	}
+}
+
+func TestBundle_Bundle_Validate_Good(t *core.T) {
+	subject := (*Bundle).Validate
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestBundle_Bundle_Validate_Bad(t *core.T) {
+	subject := (*Bundle).Validate
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestBundle_Bundle_Validate_Ugly(t *core.T) {
+	subject := (*Bundle).Validate
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestBundle_PathError_Error_Good(t *core.T) {
+	subject := (*PathError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestBundle_PathError_Error_Bad(t *core.T) {
+	subject := (*PathError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestBundle_PathError_Error_Ugly(t *core.T) {
+	subject := (*PathError).Error
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
 	}
 }

@@ -1,5 +1,7 @@
 package play
 
+import "slices"
+
 // DOSBoxEngine is a first-pass DOSBox adapter scaffold.
 type DOSBoxEngine struct {
 	Binary       string
@@ -127,11 +129,5 @@ func (engine DOSBoxEngine) PlanLaunch(bundle Bundle) (LaunchPlan, error) {
 }
 
 func supportsPlatform(platforms []string, wanted string) bool {
-	for _, platform := range platforms {
-		if platform == wanted {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(platforms, wanted)
 }

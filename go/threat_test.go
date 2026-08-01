@@ -130,7 +130,6 @@ func TestThreat_MaliciousZIPMatrix_Ugly(testingT *testing.T) {
 	}
 
 	for _, entry := range cases {
-		entry := entry
 		testingT.Run(entry.Name, func(testingT *testing.T) {
 			testingT.Parallel()
 
@@ -207,7 +206,7 @@ func testRawZIPArchive(entries ...testZIPEntry) []byte {
 
 func testAggregateZIP() []byte {
 	entries := make([]testZIPEntry, 0, 9)
-	for index := 0; index < 9; index++ {
+	for range 9 {
 		entries = append(entries, testZIPEntry{
 			Path:               "game/chunk.bin",
 			Mode:               0644,
@@ -221,7 +220,7 @@ func testAggregateZIP() []byte {
 
 func nestedArchivePath(depth int) string {
 	var buffer bytes.Buffer
-	for index := 0; index < depth; index++ {
+	for index := range depth {
 		if index > 0 {
 			buffer.WriteByte('/')
 		}

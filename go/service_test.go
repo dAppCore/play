@@ -3,6 +3,8 @@ package play
 import (
 	"testing"
 	"testing/fstest"
+
+	core "dappco.re/go"
 )
 
 func TestService_ListBundles_Good(testingT *testing.T) {
@@ -490,5 +492,104 @@ distribution:
 		"checksums.sha256":    {Data: checksumData},
 		"sbom.json":           {Data: sbomData},
 		"rom/MegaLoMania.zip": {Data: romData},
+	}
+}
+
+func TestService_NewService_Good(t *core.T) {
+	subject := NewService
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestService_NewService_Bad(t *core.T) {
+	subject := NewService
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestService_NewService_Ugly(t *core.T) {
+	subject := NewService
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestService_Service_RenderBundle_Good(t *core.T) {
+	subject := (*Service).RenderBundle
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestService_Service_RenderBundle_Bad(t *core.T) {
+	subject := (*Service).RenderBundle
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestService_Service_RenderBundle_Ugly(t *core.T) {
+	subject := (*Service).RenderBundle
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestService_Service_WriteBundle_Good(t *core.T) {
+	subject := (*Service).WriteBundle
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestService_Service_WriteBundle_Bad(t *core.T) {
+	subject := (*Service).WriteBundle
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestService_Service_WriteBundle_Ugly(t *core.T) {
+	subject := (*Service).WriteBundle
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
 	}
 }

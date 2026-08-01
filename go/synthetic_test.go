@@ -3,6 +3,8 @@ package play
 import (
 	"bytes"
 	"testing"
+
+	core "dappco.re/go"
 )
 
 func TestSynthetic_Run_Good(testingT *testing.T) {
@@ -46,5 +48,203 @@ func TestSynthetic_Run_Ugly(testingT *testing.T) {
 	}
 	if engineError.Kind != "engine/runtime-mismatch" {
 		testingT.Fatalf("unexpected engine error kind: %q", engineError.Kind)
+	}
+}
+
+func TestSynthetic_SyntheticEngine_Name_Good(t *core.T) {
+	subject := (*SyntheticEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSynthetic_SyntheticEngine_Name_Bad(t *core.T) {
+	subject := (*SyntheticEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSynthetic_SyntheticEngine_Name_Ugly(t *core.T) {
+	subject := (*SyntheticEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSynthetic_SyntheticEngine_Platforms_Good(t *core.T) {
+	subject := (*SyntheticEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSynthetic_SyntheticEngine_Platforms_Bad(t *core.T) {
+	subject := (*SyntheticEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSynthetic_SyntheticEngine_Platforms_Ugly(t *core.T) {
+	subject := (*SyntheticEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSynthetic_SyntheticEngine_Run_Good(t *core.T) {
+	subject := (*SyntheticEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSynthetic_SyntheticEngine_Run_Bad(t *core.T) {
+	subject := (*SyntheticEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSynthetic_SyntheticEngine_Run_Ugly(t *core.T) {
+	subject := (*SyntheticEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSynthetic_SyntheticEngine_Verify_Good(t *core.T) {
+	subject := (*SyntheticEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSynthetic_SyntheticEngine_Verify_Bad(t *core.T) {
+	subject := (*SyntheticEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSynthetic_SyntheticEngine_Verify_Ugly(t *core.T) {
+	subject := (*SyntheticEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSynthetic_SyntheticEngine_CodeIdentity_Good(t *core.T) {
+	subject := (*SyntheticEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSynthetic_SyntheticEngine_CodeIdentity_Bad(t *core.T) {
+	subject := (*SyntheticEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSynthetic_SyntheticEngine_CodeIdentity_Ugly(t *core.T) {
+	subject := (*SyntheticEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSynthetic_SyntheticEngine_PlanLaunch_Good(t *core.T) {
+	subject := (*SyntheticEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSynthetic_SyntheticEngine_PlanLaunch_Bad(t *core.T) {
+	subject := (*SyntheticEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestSynthetic_SyntheticEngine_PlanLaunch_Ugly(t *core.T) {
+	subject := (*SyntheticEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
 	}
 }

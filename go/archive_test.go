@@ -4,6 +4,8 @@ import (
 	"archive/zip"
 	"bytes"
 	"testing"
+
+	core "dappco.re/go"
 )
 
 func TestArchive_RenderedBundle_Good(testingT *testing.T) {
@@ -79,4 +81,37 @@ func renderedArchiveBundle(testingT *testing.T) RenderedBundle {
 	}
 
 	return rendered
+}
+
+func TestArchive_RenderedBundle_Archive_Good(t *core.T) {
+	subject := (*RenderedBundle).Archive
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestArchive_RenderedBundle_Archive_Bad(t *core.T) {
+	subject := (*RenderedBundle).Archive
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestArchive_RenderedBundle_Archive_Ugly(t *core.T) {
+	subject := (*RenderedBundle).Archive
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
 }

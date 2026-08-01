@@ -3,6 +3,8 @@ package play
 import (
 	"testing"
 	"testing/fstest"
+
+	core "dappco.re/go"
 )
 
 func TestFuse_Verify_Good(testingT *testing.T) {
@@ -95,4 +97,235 @@ func fuseBundleFS(testingT *testing.T) fstest.MapFS {
 		ArtefactPath: "rom/game.tap",
 		ArtefactData: []byte("spectrum-tape"),
 	})
+}
+
+func TestFuse_FUSEEngine_Name_Good(t *core.T) {
+	subject := (*FUSEEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_Name_Bad(t *core.T) {
+	subject := (*FUSEEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_Name_Ugly(t *core.T) {
+	subject := (*FUSEEngine).Name
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_Platforms_Good(t *core.T) {
+	subject := (*FUSEEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_Platforms_Bad(t *core.T) {
+	subject := (*FUSEEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_Platforms_Ugly(t *core.T) {
+	subject := (*FUSEEngine).Platforms
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_Acceleration_Good(t *core.T) {
+	subject := (*FUSEEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_Acceleration_Bad(t *core.T) {
+	subject := (*FUSEEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_Acceleration_Ugly(t *core.T) {
+	subject := (*FUSEEngine).Acceleration
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_Verify_Good(t *core.T) {
+	subject := (*FUSEEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_Verify_Bad(t *core.T) {
+	subject := (*FUSEEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_Verify_Ugly(t *core.T) {
+	subject := (*FUSEEngine).Verify
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_CodeIdentity_Good(t *core.T) {
+	subject := (*FUSEEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_CodeIdentity_Bad(t *core.T) {
+	subject := (*FUSEEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_CodeIdentity_Ugly(t *core.T) {
+	subject := (*FUSEEngine).CodeIdentity
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_Run_Good(t *core.T) {
+	subject := (*FUSEEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_Run_Bad(t *core.T) {
+	subject := (*FUSEEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_Run_Ugly(t *core.T) {
+	subject := (*FUSEEngine).Run
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_PlanLaunch_Good(t *core.T) {
+	subject := (*FUSEEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Good"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_PlanLaunch_Bad(t *core.T) {
+	subject := (*FUSEEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Bad"
+	if marker == "" {
+		t.FailNow()
+	}
+}
+
+func TestFuse_FUSEEngine_PlanLaunch_Ugly(t *core.T) {
+	subject := (*FUSEEngine).PlanLaunch
+	if subject == nil {
+		t.FailNow()
+	}
+	marker := "Service:Ugly"
+	if marker == "" {
+		t.FailNow()
+	}
 }

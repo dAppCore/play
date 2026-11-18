@@ -3,7 +3,7 @@ package play
 import (
 	"testing"
 
-	core "dappco.re/go"
+	core "github.com/dappcore/go"
 )
 
 func TestSandbox_PrepareSandbox_Good(testingT *testing.T) {

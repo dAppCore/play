@@ -3,8 +3,8 @@ package main
 import (
 	"path"
 
-	core "dappco.re/go"
-	"dappco.re/go/play"
+	core "github.com/dappcore/go"
+	"github.com/dappcore/play/go"
 )
 
 func TestParse_Invocation_Good(testingT *core.T) {

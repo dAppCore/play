@@ -7,8 +7,8 @@ import (
 	"os"
 	"path"
 
-	core "dappco.re/go"
-	"dappco.re/go/play"
+	core "github.com/dappcore/go"
+	"github.com/dappcore/play/go"
 )
 
 type operation string

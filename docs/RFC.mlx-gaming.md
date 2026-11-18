@@ -21,7 +21,7 @@ tags:
 > `core play` should use Apple GPU acceleration where it helps.
 > `go-mlx` is the likely compute layer, but only for the right jobs.
 
-**Module:** `dappco.re/go/play`  
+**Module:** `github.com/dappcore/play/go`  
 **Repository:** `core/play`  
 **Related module:** `dappco.re/go/mlx`  
 **Status:** Draft, feature-request RFC  

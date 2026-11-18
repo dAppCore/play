@@ -4,7 +4,7 @@ STIM Game & Software Preservation runtime — run preserved software in determin
 
 > "Games are the demo. Legacy enterprise is the product."
 
-**Module:** `dappco.re/go/play`
+**Module:** `github.com/dappcore/play/go`
 **Spec:** [`docs/RFC.md`](docs/RFC.md)
 **Depends on:** `core/app` (manifest/boot contract — see [`docs/RFC.app.md`](docs/RFC.app.md)), `core/gui` (windowing)
 

@@ -3,7 +3,7 @@ package play
 import (
 	"testing"
 
-	core "dappco.re/go"
+	core "github.com/dappcore/go"
 )
 
 func TestCommandEngines_CmdPlayEngines_Good(testingT *testing.T) {

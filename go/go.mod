@@ -1,10 +1,10 @@
-module dappco.re/go/play
+module github.com/dappcore/play/go
 
 go 1.26.0
 
 require gopkg.in/yaml.v3 v3.0.1
 
-require dappco.re/go v0.12.0
+require github.com/dappcore/go v0.13.0
 
 require (
 	github.com/kr/pretty v0.3.1 // indirect

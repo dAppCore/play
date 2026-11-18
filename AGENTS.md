@@ -4,7 +4,7 @@ Primary references: `README.md`, `CLAUDE.md`, `docs/RFC.md`, and `docs/RFC.app.m
 
 ## Identity
 
-- Module: `dappco.re/go/play`
+- Module: `github.com/dappcore/play/go`
 - Product: STIM Game & Software Preservation runtime
 - Purpose: run preserved software from deterministic, hash-verified STIM bundles
 - Status: bootstrapped repo; spec-first, implementation pending

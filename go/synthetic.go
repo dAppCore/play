@@ -1,6 +1,6 @@
 package play
 
-import core "dappco.re/go"
+import core "github.com/dappcore/go"
 
 // SyntheticEngine is a smoke-test engine that runs no external emulator.
 type SyntheticEngine struct{}

@@ -5,8 +5,8 @@ import (
 	"os"
 	"path"
 
-	core "dappco.re/go"
-	"dappco.re/go/play"
+	core "github.com/dappcore/go"
+	"github.com/dappcore/play/go"
 )
 
 func runList(parsed invocation, out io.Writer) error {

@@ -4,7 +4,7 @@ Reference: `docs/RFC.md` + `docs/RFC.app.md` (core/app keystone dep).
 
 ## Identity
 
-`dappco.re/go/play` — STIM Game & Software Preservation runtime. Wraps preserved software (ROMs, binaries, installers) in deterministic hash-verified bundles, runs them via appropriate emulator core / compat layer / native runner.
+`github.com/dappcore/play/go` — STIM Game & Software Preservation runtime. Wraps preserved software (ROMs, binaries, installers) in deterministic hash-verified bundles, runs them via appropriate emulator core / compat layer / native runner.
 
 ## Dependency chain
 

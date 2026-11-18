@@ -1,6 +1,6 @@
 package play
 
-import core "dappco.re/go"
+import core "github.com/dappcore/go"
 
 type stubengine struct {
 	name      string

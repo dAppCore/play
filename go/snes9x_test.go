@@ -4,7 +4,7 @@ import (
 	"testing"
 	"testing/fstest"
 
-	core "dappco.re/go"
+	core "github.com/dappcore/go"
 )
 
 func TestSnes9x_Verify_Good(testingT *testing.T) {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	core "dappco.re/go"
+	core "github.com/dappcore/go"
 )
 
 func TestScummvm_Verify_Good(testingT *testing.T) {

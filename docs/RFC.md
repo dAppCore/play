@@ -19,7 +19,7 @@ tags:
 > `core play` runs preserved software from deterministic STIM bundles.
 > Games are the demo. Legacy enterprise is the product.
 
-**Module:** `dappco.re/go/play`  
+**Module:** `github.com/dappcore/play/go`  
 **Repository:** `core/play`  
 **Status:** Draft, spec-first  
 **Primary dependency:** `core/app` supplies the manifest and boot contract

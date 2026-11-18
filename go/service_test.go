@@ -4,7 +4,7 @@ import (
 	"testing"
 	"testing/fstest"
 
-	core "dappco.re/go"
+	core "github.com/dappcore/go"
 )
 
 func TestService_ListBundles_Good(testingT *testing.T) {

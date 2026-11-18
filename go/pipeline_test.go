@@ -3,7 +3,7 @@ package play
 import (
 	"testing"
 
-	core "dappco.re/go"
+	core "github.com/dappcore/go"
 )
 
 func TestPipeline_Process_Good(testingT *testing.T) {

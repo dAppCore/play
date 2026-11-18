@@ -3,7 +3,7 @@ package play
 import (
 	"testing"
 
-	core "dappco.re/go"
+	core "github.com/dappcore/go"
 )
 
 func TestValidate_Manifest_Good(testingT *testing.T) {

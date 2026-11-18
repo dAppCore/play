@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	core "dappco.re/go"
+	core "github.com/dappcore/go"
 )
 
 func TestSynthetic_Run_Good(testingT *testing.T) {

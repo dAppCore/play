@@ -10,7 +10,7 @@ Runs preserved software inside STIM (Sandboxed Temporal Isolation Module) contai
 
 - **Status**: Specced (389 lines), implementing
 - **Repo**: `core/play`
-- **Module**: `dappco.re/go/play`
+- **Module**: `github.com/dappcore/play/go`
 - **Depends on**: core/app (manifest), core/gui (WebView2), core/go/build (deterministic archives), core/cli
 - **Revenue priority**: Apple pivot — parallel path with CoreLEM
 

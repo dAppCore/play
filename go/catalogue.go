@@ -6,7 +6,7 @@ import (
 	"path"
 	"sort"
 
-	core "dappco.re/go"
+	core "github.com/dappcore/go"
 )
 
 // BundleSummary describes a bundle for list and verify surfaces.

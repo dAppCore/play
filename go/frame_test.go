@@ -3,7 +3,7 @@ package play
 import (
 	"testing"
 
-	core "dappco.re/go"
+	core "github.com/dappcore/go"
 )
 
 func TestFrame_Validate_Good(testingT *testing.T) {

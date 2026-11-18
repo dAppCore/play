@@ -22,7 +22,7 @@ tags:
 > `core play` needs Apple-specific runtime work beyond MLX.
 > That work should stay separate from Metal compute.
 
-**Module:** `dappco.re/go/play`  
+**Module:** `github.com/dappcore/play/go`  
 **Repository:** `core/play`  
 **Status:** Draft, companion RFC  
 **Audience:** `core/play` and `core/gui` maintainers

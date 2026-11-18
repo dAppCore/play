@@ -1,6 +1,6 @@
 package main
 
-import core "dappco.re/go"
+import core "github.com/dappcore/go"
 
 func TestAX7_BundleWriter_EnsureDirectory_Good(testingT *core.T) {
 	root := testingT.TempDir()

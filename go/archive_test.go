@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"testing"
 
-	core "dappco.re/go"
+	core "github.com/dappcore/go"
 )
 
 func TestArchive_RenderedBundle_Good(testingT *testing.T) {
